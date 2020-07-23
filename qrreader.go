@@ -4,16 +4,21 @@ import (
 	"fmt"
 	"image"
 	_ "image/jpeg"
+	"log"
 	"os"
 
 	"github.com/makiuchi-d/gozxing"
 	"github.com/makiuchi-d/gozxing/qrcode"
 )
 
-func QRreader() {
-	//Encode qrcode
-	// open and decode image file
-	fileEncode, _ := os.Open("qrcode.jpg")
+//QRreader - Encode qrcode
+func QRreader(path string) error {
+
+	// open and decode image file JPG
+	fileEncode, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
+	}
 	img, _, _ := image.Decode(fileEncode)
 
 	// prepare BinaryBitmap
@@ -24,4 +29,6 @@ func QRreader() {
 	result, _ := qrReader.Decode(bmp, nil)
 
 	fmt.Println(result)
+
+	return err
 }
