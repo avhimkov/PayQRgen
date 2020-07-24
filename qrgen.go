@@ -5,25 +5,11 @@ import (
 	"image/png"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 )
-
-//CoreBankPay - Обязательные реквизиты (блок «Payee» УФЭБС[5])
-type CoreBankPay struct {
-	Name        string // Наименование получателя платежа (Макс. 160 знаков (имя тега по [5] : Payee/ Name))
-	PersonalAcc string // Номер счета получателя платежа (Макс. 20 знаков (имя тега по [5] : Payee/ PersonalAcc))
-	BankName    string // Наименование банка получателя платежа (Макс. 45 знаков (не определен [5]))
-	BIC         string // БИК (Макс. 9 знаков (имя тега по [5] : Payee/ Bank/ BIC))
-	CorrespAcc  string // Номер кор./сч. банка получателя платежа (Макс. 20 знаков (имя тега по УФЭБС: Payee/ Bank/ CorrespAcc))
-}
-
-// StdUtf8 - Standart coding UTF8
-const StdUtf8 = "ST00012"
-
-// StdWin1251 - Standart coding Win1251
-const StdWin1251 = "ST00011"
 
 //QRgen - Create the qr, barcode
 func QRgen(text, path string) error {
@@ -49,4 +35,24 @@ func QRgen(text, path string) error {
 // QRgenPay - generate pay info
 func (c *CoreBankPay) QRgenPay() {
 	fmt.Println(StdUtf8, "|", c.Name, "|", c.PersonalAcc, "|", c.BankName, "|", c.BIC, "|", c.CorrespAcc)
+
+	// paycore := CoreBankPay{}
+
+	paycore := CoreBankPay{
+		ST:          StdUtf8,
+		Name:        "ООО «Три кита»",
+		PersonalAcc: "40702810138250123017",
+		BankName:    "ОАО 'БАНК'",
+		BIC:         "044525225",
+		CorrespAcc:  "30101810400000000225",
+	}
+
+	var s []string
+	for _, v := range paycore {
+		s = append(s, v.Tag1, v.Tag2, v.Tag3)
+	}
+
+	// weekdays := []string{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}
+	// there is a space after comma
+	fmt.Println(strings.Join(s, "|"))
 }
