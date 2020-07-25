@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image/png"
 	"log"
 	"os"
@@ -33,26 +32,15 @@ func QRgen(text, path string) error {
 }
 
 // QRgenPay - generate pay info
-func (c *CoreBankPay) QRgenPay() {
-	fmt.Println(StdUtf8, "|", c.Name, "|", c.PersonalAcc, "|", c.BankName, "|", c.BIC, "|", c.CorrespAcc)
+func (c CoreBankPay) QRgenPay(paycore CoreBankPay) string {
 
-	// paycore := CoreBankPay{}
-
-	paycore := CoreBankPay{
-		ST:          StdUtf8,
-		Name:        "ООО «Три кита»",
-		PersonalAcc: "40702810138250123017",
-		BankName:    "ОАО 'БАНК'",
-		BIC:         "044525225",
-		CorrespAcc:  "30101810400000000225",
-	}
+	var core []CoreBankPay
+	core = append(core, paycore)
 
 	var s []string
-	for _, v := range paycore {
-		s = append(s, v.Tag1, v.Tag2, v.Tag3)
+	for _, v := range core {
+		s = append(s, v.ST, v.Name, v.PersonalAcc, v.BankName, v.BIC, v.CorrespAcc)
 	}
 
-	// weekdays := []string{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}
-	// there is a space after comma
-	fmt.Println(strings.Join(s, "|"))
+	return strings.Join(s, "|")
 }
