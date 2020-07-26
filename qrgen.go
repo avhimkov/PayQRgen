@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"image/png"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
@@ -34,13 +35,19 @@ func QRgen(text, path string) error {
 // QRgenPay - generate pay info
 func (c CoreBankPay) QRgenPay(paycore CoreBankPay) string {
 
-	var core []CoreBankPay
-	core = append(core, paycore)
-
-	var s []string
-	for _, v := range core {
-		s = append(s, v.ST, v.Name, v.PersonalAcc, v.BankName, v.BIC, v.CorrespAcc)
+	cbpmap := map[string]string{
+		"Name":        paycore.Name,
+		"PersonalAcc": paycore.PersonalAcc,
+		"BankName":    paycore.BankName,
+		"BIC":         paycore.BIC,
+		"CorrespAcc":  paycore.CorrespAcc,
 	}
 
-	return strings.Join(s, "|")
+	b := new(bytes.Buffer)
+
+	for k, v := range cbpmap {
+		fmt.Fprintf(b, "%s=%s|", k, v)
+	}
+
+	return b.String()
 }

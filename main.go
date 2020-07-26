@@ -18,8 +18,16 @@ func main() {
 		BankName:    "ОАО 'БАНК'",
 		BIC:         "044525225",
 		CorrespAcc:  "30101810400000000225",
+
+		/*
+			Name:        Field{"Name=", "ООО «Три кита»"},
+			PersonalAcc: Field{"PersonalAcc=", "40702810138250123017"},
+			BankName:    Field{"BankName=", "ОАО 'БАНК'"},
+			BIC:         Field{"BIC=", "044525225"},
+			CorrespAcc:  Field{"CorrespAcc=", "30101810400000000225"},
+		*/
 	}
 
-	fmt.Println(paycore.QRgenPay(paycore))
+	fmt.Println(StdUtf8 + "|" + paycore.QRgenPay(paycore))
 
 }
