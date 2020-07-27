@@ -34,7 +34,6 @@ type ExtendBankPay struct {
 	DocNo        string // Номер документа - Макс. 15 знаков (имя тега по [5]: DepartmentalInfo/ DocNo)
 	DocDate      string // Дата документа - Макс. 10 знаков (имя тега по [5]: DepartmentalInfo/ DocDate)
 	TaxPaytKind  string // Тип платежа - Макс. 2 знака (имя тега по [5]: sDepartmentalInfo/ TaxPaytKind)
-
 }
 
 // AnotherExtendBankPay - Прочие дополнительные реквизиты

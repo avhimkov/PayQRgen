@@ -12,22 +12,65 @@ func main() {
 	QRreader("gen/qr.png")
 
 	paycore := CoreBankPay{
-		ST:          StdUtf8,
+		// ST:          StdUtf8,
 		Name:        "ООО «Три кита»",
 		PersonalAcc: "40702810138250123017",
 		BankName:    "ОАО 'БАНК'",
 		BIC:         "044525225",
 		CorrespAcc:  "30101810400000000225",
-
-		/*
-			Name:        Field{"Name=", "ООО «Три кита»"},
-			PersonalAcc: Field{"PersonalAcc=", "40702810138250123017"},
-			BankName:    Field{"BankName=", "ОАО 'БАНК'"},
-			BIC:         Field{"BIC=", "044525225"},
-			CorrespAcc:  Field{"CorrespAcc=", "30101810400000000225"},
-		*/
 	}
 
-	fmt.Println(StdUtf8 + "|" + paycore.QRgenPay(paycore))
+	extpay := ExtendBankPay{
+		Sum:          "",
+		Purpose:      "",
+		PayeeINN:     "",
+		PayerINN:     "",
+		DrawerStatus: "",
+		KPP:          "",
+		CBC:          "",
+		OKTMO:        "",
+		PaytReason:   "",
+		TaxPeriod:    "",
+		DocNo:        "",
+		DocDate:      "",
+		TaxPaytKind:  "",
+	}
+
+	anotextpay := AnotherExtendBankPay{
+		LastName:        "",
+		FirstName:       "",
+		MiddleName:      "",
+		PayerAddress:    "",
+		PersonalAccount: "",
+		DocIdx:          "",
+		PensAcc:         "",
+		Contract:        "",
+		PersAcc:         "",
+		Flat:            "",
+		Phone:           "",
+		PayerIDType:     "",
+		PayerIDNum:      "",
+		ChildFio:        "",
+		BirthDate:       "",
+		PaymTerm:        "",
+		PaymPeriod:      "",
+		Category:        "",
+		ServiceName:     "",
+		CounterID:       "",
+		CounterVal:      "",
+		QuittID:         "",
+		QuittDate:       "",
+		InstNum:         "",
+		ClassNum:        "",
+		SpecFio:         "",
+		AddAmount:       "",
+		RuleID:          "",
+		ExecID:          "",
+		RegType:         "",
+		UIN:             "",
+		TechCode:        "",
+	}
+
+	fmt.Println(StdUtf8 + "|" + paycore.QRgenPayCore(paycore) + "|" + extpay.QRgenPayExt(extpay) + "|" + anotextpay.QRgenPayAnotExt(anotextpay))
 
 }
