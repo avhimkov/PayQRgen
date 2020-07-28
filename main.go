@@ -13,61 +13,61 @@ func main() {
 	cbpmap := CoreBankPay{
 		Name:        "ООО «Три кита»",
 		PersonalAcc: "40702810138250123017",
-		BankName:    "ОАО \"БАНК\"",
+		BankName:    "ОАО 'БАНК'",
 		BIC:         "044525225",
 		CorrespAcc:  "30101810400000000225",
 	}
 
-	extpay := ExtendBankPay{
-		Sum:          "",
-		Purpose:      "",
-		PayeeINN:     "",
-		PayerINN:     "",
-		DrawerStatus: "",
-		KPP:          "",
-		CBC:          "",
-		OKTMO:        "",
-		PaytReason:   "",
-		TaxPeriod:    "",
-		DocNo:        "",
-		DocDate:      "",
-		TaxPaytKind:  "",
-	}
+	/* 	extpay := ExtendBankPay{
+	   		Sum:          "",
+	   		Purpose:      "",
+	   		PayeeINN:     "",
+	   		PayerINN:     "",
+	   		DrawerStatus: "",
+	   		KPP:          "",
+	   		CBC:          "",
+	   		OKTMO:        "",
+	   		PaytReason:   "",
+	   		TaxPeriod:    "",
+	   		DocNo:        "",
+	   		DocDate:      "",
+	   		TaxPaytKind:  "",
+	   	}
 
-	anotextpay := AnotherExtendBankPay{
-		LastName:        "",
-		FirstName:       "",
-		MiddleName:      "",
-		PayerAddress:    "",
-		PersonalAccount: "",
-		DocIdx:          "",
-		PensAcc:         "",
-		Contract:        "",
-		PersAcc:         "",
-		Flat:            "",
-		Phone:           "",
-		PayerIDType:     "",
-		PayerIDNum:      "",
-		ChildFio:        "",
-		BirthDate:       "",
-		PaymTerm:        "",
-		PaymPeriod:      "",
-		Category:        "",
-		ServiceName:     "",
-		CounterID:       "",
-		CounterVal:      "",
-		QuittID:         "",
-		QuittDate:       "",
-		InstNum:         "",
-		ClassNum:        "",
-		SpecFio:         "",
-		AddAmount:       "",
-		RuleID:          "",
-		ExecID:          "",
-		RegType:         "",
-		UIN:             "",
-		TechCode:        "",
-	}
+	   	anotextpay := AnotherExtendBankPay{
+	   		LastName:        "",
+	   		FirstName:       "",
+	   		MiddleName:      "",
+	   		PayerAddress:    "",
+	   		PersonalAccount: "",
+	   		DocIdx:          "",
+	   		PensAcc:         "",
+	   		Contract:        "",
+	   		PersAcc:         "",
+	   		Flat:            "",
+	   		Phone:           "",
+	   		PayerIDType:     "",
+	   		PayerIDNum:      "",
+	   		ChildFio:        "",
+	   		BirthDate:       "",
+	   		PaymTerm:        "",
+	   		PaymPeriod:      "",
+	   		Category:        "",
+	   		ServiceName:     "",
+	   		CounterID:       "",
+	   		CounterVal:      "",
+	   		QuittID:         "",
+	   		QuittDate:       "",
+	   		InstNum:         "",
+	   		ClassNum:        "",
+	   		SpecFio:         "",
+	   		AddAmount:       "",
+	   		RuleID:          "",
+	   		ExecID:          "",
+	   		RegType:         "",
+	   		UIN:             "",
+	   		TechCode:        "",
+	   	} */
 
 	// fmt.Println(StdUtf8 + "|" + paycore.QRgenPayCore(paycore) + "|" + extpay.QRgenPayExt(extpay) + "|" + anotextpay.QRgenPayAnotExt(anotextpay))
 	// QRgen(StdUtf8+"|"+paycore.QRgenPayCore(paycore)+extpay.QRgenPayExt(extpay)+anotextpay.QRgenPayAnotExt(anotextpay), "gen/qr.png")
@@ -77,5 +77,6 @@ func main() {
 
 	// QRreader("gen/qr.png")
 
-	fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap) + extpay.QRgenPayExt(extpay) + anotextpay.QRgenPayAnotExt(anotextpay))
+	// fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap) + extpay.QRgenPayExt(extpay) + anotextpay.QRgenPayAnotExt(anotextpay))
+	fmt.Println(cbpmap.QRgenPayCore(cbpmap))
 }

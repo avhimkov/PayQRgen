@@ -49,7 +49,29 @@ func (c CoreBankPay) QRgenPayCore(paycore CoreBankPay) string {
 		// return
 	}
 
-	return string(b)
+	bytes := []byte(b)
+
+	// Unmarshal string into structs.
+	var coreBankPay []CoreBankPay
+	json.Unmarshal(bytes, &coreBankPay)
+
+	// Loop over structs and display them.
+
+	/*
+		for c := range coreBankPay {
+		fmt.Printf("%v=%v|", coreBankPay[c], coreBankPay[c])
+		fmt.Println()
+		}
+	*/
+
+	// New Buffer.
+	/*
+		buff := new(bytes.Buffer)
+		fmt.Fprintf(buff, "%s=%s|", b)
+		return buff.String()
+	*/
+
+	return string(bytes)
 }
 
 // QRgenPay - generate pay info
