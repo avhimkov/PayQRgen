@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"image/png"
 	"log"
@@ -35,94 +35,95 @@ func QRgen(text, path string) error {
 // QRgenPay - generate pay info
 func (c CoreBankPay) QRgenPayCore(paycore CoreBankPay) string {
 
-	cbpmap := map[string]string{
-		"Name":        paycore.Name,
-		"PersonalAcc": paycore.PersonalAcc,
-		"BankName":    paycore.BankName,
-		"BIC":         paycore.BIC,
-		"CorrespAcc":  paycore.CorrespAcc,
+	cbpmap := &CoreBankPay{
+		Name:        paycore.Name,
+		PersonalAcc: paycore.PersonalAcc,
+		BankName:    paycore.BankName,
+		BIC:         paycore.BIC,
+		CorrespAcc:  paycore.CorrespAcc,
 	}
 
-	b := new(bytes.Buffer)
-
-	for k, v := range cbpmap {
-		fmt.Fprintf(b, "%s=%s|", k, v)
+	b, err := json.Marshal(cbpmap)
+	if err != nil {
+		fmt.Println(err)
+		// return
 	}
 
-	return b.String()
+	return string(b)
 }
 
 // QRgenPay - generate pay info
 func (c ExtendBankPay) QRgenPayExt(extpay ExtendBankPay) string {
 
-	ebpmap := map[string]string{
-		"Sum":          extpay.Sum,
-		"Purpose":      extpay.Purpose,
-		"PayeeINN":     extpay.PayeeINN,
-		"PayerINN":     extpay.PayerINN,
-		"DrawerStatus": extpay.DrawerStatus,
-		"KPP":          extpay.KPP,
-		"CBC":          extpay.CBC,
-		"OKTMO":        extpay.OKTMO,
-		"PaytReason":   extpay.PaytReason,
-		"TaxPeriod":    extpay.TaxPeriod,
-		"DocNo":        extpay.DocNo,
-		"DocDate":      extpay.DocDate,
-		"TaxPaytKind":  extpay.TaxPaytKind,
+	ebpmap := &ExtendBankPay{
+		Sum:          extpay.Sum,
+		Purpose:      extpay.Purpose,
+		PayeeINN:     extpay.PayeeINN,
+		PayerINN:     extpay.PayerINN,
+		DrawerStatus: extpay.DrawerStatus,
+		KPP:          extpay.KPP,
+		CBC:          extpay.CBC,
+		OKTMO:        extpay.OKTMO,
+		PaytReason:   extpay.PaytReason,
+		TaxPeriod:    extpay.TaxPeriod,
+		DocNo:        extpay.DocNo,
+		DocDate:      extpay.DocDate,
+		TaxPaytKind:  extpay.TaxPaytKind,
 	}
 
-	b := new(bytes.Buffer)
-
-	for k, v := range ebpmap {
-		fmt.Fprintf(b, "%s=%s|", k, v)
+	b, err := json.Marshal(ebpmap)
+	if err != nil {
+		fmt.Println(err)
+		// return
 	}
 
-	return b.String()
+	return string(b)
+
 }
 
 // QRgenPay - generate pay info
 func (c AnotherExtendBankPay) QRgenPayAnotExt(advextpay AnotherExtendBankPay) string {
 
-	ebpmap := map[string]string{
-		"LastName":        advextpay.LastName,
-		"FirstName":       advextpay.FirstName,
-		"MiddleName":      advextpay.MiddleName,
-		"PayerAddress":    advextpay.PayerAddress,
-		"PersonalAccount": advextpay.PersonalAccount,
-		"DocIdx":          advextpay.DocIdx,
-		"PensAcc":         advextpay.PensAcc,
-		"Contract":        advextpay.Contract,
-		"PersAcc":         advextpay.PersAcc,
-		"Flat":            advextpay.Flat,
-		"Phone":           advextpay.Phone,
-		"PayerIDType":     advextpay.PayerIDType,
-		"PayerIDNum":      advextpay.PayerIDNum,
-		"ChildFio":        advextpay.ChildFio,
-		"BirthDate":       advextpay.BirthDate,
-		"PaymTerm":        advextpay.PaymTerm,
-		"PaymPeriod":      advextpay.PaymPeriod,
-		"Category":        advextpay.Category,
-		"ServiceName":     advextpay.ServiceName,
-		"CounterID":       advextpay.CounterID,
-		"CounterVal":      advextpay.CounterVal,
-		"QuittID":         advextpay.QuittID,
-		"QuittDate":       advextpay.QuittDate,
-		"InstNum":         advextpay.InstNum,
-		"ClassNum":        advextpay.ClassNum,
-		"SpecFio":         advextpay.SpecFio,
-		"AddAmount":       advextpay.AddAmount,
-		"RuleID":          advextpay.RuleID,
-		"ExecID":          advextpay.ExecID,
-		"RegType":         advextpay.RegType,
-		"UIN":             advextpay.UIN,
-		"TechCode":        advextpay.TechCode,
+	ebpmap := &AnotherExtendBankPay{
+		LastName:        advextpay.LastName,
+		FirstName:       advextpay.FirstName,
+		MiddleName:      advextpay.MiddleName,
+		PayerAddress:    advextpay.PayerAddress,
+		PersonalAccount: advextpay.PersonalAccount,
+		DocIdx:          advextpay.DocIdx,
+		PensAcc:         advextpay.PensAcc,
+		Contract:        advextpay.Contract,
+		PersAcc:         advextpay.PersAcc,
+		Flat:            advextpay.Flat,
+		Phone:           advextpay.Phone,
+		PayerIDType:     advextpay.PayerIDType,
+		PayerIDNum:      advextpay.PayerIDNum,
+		ChildFio:        advextpay.ChildFio,
+		BirthDate:       advextpay.BirthDate,
+		PaymTerm:        advextpay.PaymTerm,
+		PaymPeriod:      advextpay.PaymPeriod,
+		Category:        advextpay.Category,
+		ServiceName:     advextpay.ServiceName,
+		CounterID:       advextpay.CounterID,
+		CounterVal:      advextpay.CounterVal,
+		QuittID:         advextpay.QuittID,
+		QuittDate:       advextpay.QuittDate,
+		InstNum:         advextpay.InstNum,
+		ClassNum:        advextpay.ClassNum,
+		SpecFio:         advextpay.SpecFio,
+		AddAmount:       advextpay.AddAmount,
+		RuleID:          advextpay.RuleID,
+		ExecID:          advextpay.ExecID,
+		RegType:         advextpay.RegType,
+		UIN:             advextpay.UIN,
+		TechCode:        advextpay.TechCode,
 	}
 
-	b := new(bytes.Buffer)
-
-	for k, v := range ebpmap {
-		fmt.Fprintf(b, "%s=%s|", k, v)
+	b, err := json.Marshal(ebpmap)
+	if err != nil {
+		fmt.Println(err)
+		// return
 	}
 
-	return b.String()
+	return string(b)
 }

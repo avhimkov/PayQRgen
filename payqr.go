@@ -6,17 +6,23 @@ const StdUtf8 = "ST00012"
 // StdWin1251 - Standart coding Win1251
 const StdWin1251 = "ST00011"
 
+type KV struct {
+	key   string
+	value string
+}
+
 // CoreBankPay - Обязательные реквизиты (блок «Payee» УФЭБС[5])
 type CoreBankPay struct {
 	// ST          string // Идентификатор формата (формат «свой»)
 	// FormatVer   string // Версия формата
 	// CodeText    string // кодировка
-	ST          string // Служебный блок
+	// ST          string // Служебный блок
 	Name        string // Наименование получателя платежа - Макс. 160 знаков (имя тега по [5] : Payee/ Name)
 	PersonalAcc string // Номер счета получателя платежа - Макс. 20 знаков (имя тега по [5] : Payee/ PersonalAcc)
 	BankName    string // Наименование банка получателя платежа - Макс. 45 знаков (не определен [5])
 	BIC         string // БИК - Макс. 9 знаков (имя тега по [5] : Payee/ Bank/ BIC)
 	CorrespAcc  string // Номер кор./сч. банка получателя платежа - Макс. 20 знаков (имя тега по УФЭБС: Payee/ Bank/ CorrespAcc)
+	ExBankPay   ExtendBankPay
 }
 
 // ExtendBankPay - Дополнительные реквизиты, формат значений которых определяется Альбомом [5].
@@ -34,6 +40,7 @@ type ExtendBankPay struct {
 	DocNo        string // Номер документа - Макс. 15 знаков (имя тега по [5]: DepartmentalInfo/ DocNo)
 	DocDate      string // Дата документа - Макс. 10 знаков (имя тега по [5]: DepartmentalInfo/ DocDate)
 	TaxPaytKind  string // Тип платежа - Макс. 2 знака (имя тега по [5]: sDepartmentalInfo/ TaxPaytKind)
+	AExBankPay   AnotherExtendBankPay
 }
 
 // AnotherExtendBankPay - Прочие дополнительные реквизиты

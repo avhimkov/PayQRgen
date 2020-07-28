@@ -8,14 +8,12 @@ import "fmt"
 // 2 (соответствует UTF-8) – будет выводиться ST00012.
 
 func main() {
-	QRgen("http://yandex.ru", "gen/qr.png")
-	QRreader("gen/qr.png")
+	// QRgen("http://yandex.ru", "gen/qr.png")
 
-	paycore := CoreBankPay{
-		// ST:          StdUtf8,
+	cbpmap := CoreBankPay{
 		Name:        "ООО «Три кита»",
 		PersonalAcc: "40702810138250123017",
-		BankName:    "ОАО 'БАНК'",
+		BankName:    "ОАО \"БАНК\"",
 		BIC:         "044525225",
 		CorrespAcc:  "30101810400000000225",
 	}
@@ -71,6 +69,13 @@ func main() {
 		TechCode:        "",
 	}
 
-	fmt.Println(StdUtf8 + "|" + paycore.QRgenPayCore(paycore) + "|" + extpay.QRgenPayExt(extpay) + "|" + anotextpay.QRgenPayAnotExt(anotextpay))
+	// fmt.Println(StdUtf8 + "|" + paycore.QRgenPayCore(paycore) + "|" + extpay.QRgenPayExt(extpay) + "|" + anotextpay.QRgenPayAnotExt(anotextpay))
+	// QRgen(StdUtf8+"|"+paycore.QRgenPayCore(paycore)+extpay.QRgenPayExt(extpay)+anotextpay.QRgenPayAnotExt(anotextpay), "gen/qr.png")
+	// fmt.Println(paycore.QRgenPayCore(paycore))
+	// fmt.Println(extpay.QRgenPayExt(extpay))
+	// fmt.Println(anotextpay.QRgenPayAnotExt(anotextpay))
 
+	// QRreader("gen/qr.png")
+
+	fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap) + extpay.QRgenPayExt(extpay) + anotextpay.QRgenPayAnotExt(anotextpay))
 }
