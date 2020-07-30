@@ -32,30 +32,20 @@ func QRgen(text, path string) error {
 	return err
 }
 
+/* func (c *CoreBankPay) AddItem(item MyBoxItem) []MyBoxItem {
+    c.Name = append(c.Name, item)
+    return box.Items
+} */
+
 // QRgenPay - generate pay info
-func (c CoreBankPay) QRgenPayCore(paycore CoreBankPay) string {
+func (c CoreBankPay) QRgenPayCore() string {
 
-	cbpmap := &CoreBankPay{
-		Name:        paycore.Name,
-		PersonalAcc: paycore.PersonalAcc,
-		BankName:    paycore.BankName,
-		BIC:         paycore.BIC,
-		CorrespAcc:  paycore.CorrespAcc,
-	}
-
-	bytes, err := json.Marshal(cbpmap)
+	bytes, err := json.Marshal(c)
 	if err != nil {
 		fmt.Println(err)
 		// return
 	}
 
-	// s1 := fmt.Sprintf("%+v", cbpmap)
-	/* 	var core CoreBankPay
-	   	err = json.Unmarshal(bytes, &core)
-	   	if err != nil {
-	   		panic(err)
-	   	}
-	*/
 	/*
 		bytes := []byte(b)
 
@@ -80,35 +70,16 @@ func (c CoreBankPay) QRgenPayCore(paycore CoreBankPay) string {
 	   	fmt.Fprintf(buff, "%s=%s|", cbpmap)
 	   	return buff.String()
 	*/
+
 	/*
-		getTicketSteps := getTicketSteps("0,5,6")
-
-		var ticketSteps GetTickStp
-
-		err1 := json.Unmarshal([]byte(getTicketSteps), &ticketSteps)
+		b := []byte(bytes)
+		err1 := json.Unmarshal(b, &cbpmap)
 		if err1 != nil {
 			panic(err1)
 		}
-		var tiketstep []TicketSteps
-		for i := 0; i < len(ticketSteps.TicketSteps); i++ {
-
-			tiketstep = append(tiketstep, TicketSteps{
-				TicketStepID: ticketSteps.TicketSteps[i].TicketStepID,
-				TicketNo:     ticketSteps.TicketSteps[i].TicketNo,
-				CustID:       ticketSteps.TicketSteps[i].CustID,
-				CustData:     ticketSteps.TicketSteps[i].CustData,
-				SourceKind:   ticketSteps.TicketSteps[i].SourceKind,
-				State:        ticketSteps.TicketSteps[i].State,
-				ServiceID:    ticketSteps.TicketSteps[i].ServiceID,
-				RegTime:      ticketSteps.TicketSteps[i].RegTime,
-				CallTime:     ticketSteps.TicketSteps[i].CallTime,
-				PriorityID:   ticketSteps.TicketSteps[i].PriorityID,
-				QualityMark:  ticketSteps.TicketSteps[i].QualityMark,
-			})
-		}
 	*/
+	// return core
 	return string(bytes)
-	// return string(b)
 }
 
 // QRgenPay - generate pay info
