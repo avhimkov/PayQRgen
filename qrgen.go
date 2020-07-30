@@ -43,17 +43,26 @@ func (c CoreBankPay) QRgenPayCore(paycore CoreBankPay) string {
 		CorrespAcc:  paycore.CorrespAcc,
 	}
 
-	b, err := json.Marshal(cbpmap)
+	bytes, err := json.Marshal(cbpmap)
 	if err != nil {
 		fmt.Println(err)
 		// return
 	}
 
-	bytes := []byte(b)
+	// s1 := fmt.Sprintf("%+v", cbpmap)
+	/* 	var core CoreBankPay
+	   	err = json.Unmarshal(bytes, &core)
+	   	if err != nil {
+	   		panic(err)
+	   	}
+	*/
+	/*
+		bytes := []byte(b)
 
-	// Unmarshal string into structs.
-	var coreBankPay []CoreBankPay
-	json.Unmarshal(bytes, &coreBankPay)
+		// Unmarshal string into structs.
+		var coreBankPay []CoreBankPay
+		json.Unmarshal(bytes, &coreBankPay)
+	*/
 
 	// Loop over structs and display them.
 
@@ -65,13 +74,41 @@ func (c CoreBankPay) QRgenPayCore(paycore CoreBankPay) string {
 	*/
 
 	// New Buffer.
-	/*
-		buff := new(bytes.Buffer)
-		fmt.Fprintf(buff, "%s=%s|", b)
-		return buff.String()
-	*/
 
+	/*
+	   buff := new(bytes.Buffer)
+	   	fmt.Fprintf(buff, "%s=%s|", cbpmap)
+	   	return buff.String()
+	*/
+	/*
+		getTicketSteps := getTicketSteps("0,5,6")
+
+		var ticketSteps GetTickStp
+
+		err1 := json.Unmarshal([]byte(getTicketSteps), &ticketSteps)
+		if err1 != nil {
+			panic(err1)
+		}
+		var tiketstep []TicketSteps
+		for i := 0; i < len(ticketSteps.TicketSteps); i++ {
+
+			tiketstep = append(tiketstep, TicketSteps{
+				TicketStepID: ticketSteps.TicketSteps[i].TicketStepID,
+				TicketNo:     ticketSteps.TicketSteps[i].TicketNo,
+				CustID:       ticketSteps.TicketSteps[i].CustID,
+				CustData:     ticketSteps.TicketSteps[i].CustData,
+				SourceKind:   ticketSteps.TicketSteps[i].SourceKind,
+				State:        ticketSteps.TicketSteps[i].State,
+				ServiceID:    ticketSteps.TicketSteps[i].ServiceID,
+				RegTime:      ticketSteps.TicketSteps[i].RegTime,
+				CallTime:     ticketSteps.TicketSteps[i].CallTime,
+				PriorityID:   ticketSteps.TicketSteps[i].PriorityID,
+				QualityMark:  ticketSteps.TicketSteps[i].QualityMark,
+			})
+		}
+	*/
 	return string(bytes)
+	// return string(b)
 }
 
 // QRgenPay - generate pay info
