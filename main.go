@@ -4,9 +4,6 @@ import "fmt"
 
 // github.com/divan/qrlogo
 
-// 1 (соответствует Windows-1251) – будет выводиться ST00011;
-// 2 (соответствует UTF-8) – будет выводиться ST00012.
-
 func main() {
 	// QRgen("http://yandex.ru", "gen/qr.png")
 
@@ -19,64 +16,65 @@ func main() {
 	}
 
 	/* 	extpay := ExtendBankPay{
-	   		Sum:          "",
-	   		Purpose:      "",
-	   		PayeeINN:     "",
-	   		PayerINN:     "",
-	   		DrawerStatus: "",
-	   		KPP:          "",
-	   		CBC:          "",
-	   		OKTMO:        "",
-	   		PaytReason:   "",
-	   		TaxPeriod:    "",
-	   		DocNo:        "",
-	   		DocDate:      "",
-	   		TaxPaytKind:  "",
+	   		Sum:      "100000",
+	   		Purpose:  "Оплата членского взноса",
+	   		PayeeINN: "6200098765",
+	   		// PayerINN:     "",
+	   		// DrawerStatus: "",
+	   		// KPP:          "",
+	   		// CBC:          "",
+	   		// OKTMO:        "",
+	   		// PaytReason:   "",
+	   		// TaxPeriod:    "",
+	   		// DocNo:        "",
+	   		// DocDate:      "",
+	   		// TaxPaytKind:  "",
 	   	}
 
 	   	anotextpay := AnotherExtendBankPay{
-	   		LastName:        "",
-	   		FirstName:       "",
-	   		MiddleName:      "",
-	   		PayerAddress:    "",
-	   		PersonalAccount: "",
-	   		DocIdx:          "",
-	   		PensAcc:         "",
-	   		Contract:        "",
-	   		PersAcc:         "",
-	   		Flat:            "",
-	   		Phone:           "",
-	   		PayerIDType:     "",
-	   		PayerIDNum:      "",
-	   		ChildFio:        "",
-	   		BirthDate:       "",
-	   		PaymTerm:        "",
-	   		PaymPeriod:      "",
-	   		Category:        "",
-	   		ServiceName:     "",
-	   		CounterID:       "",
-	   		CounterVal:      "",
-	   		QuittID:         "",
-	   		QuittDate:       "",
-	   		InstNum:         "",
-	   		ClassNum:        "",
-	   		SpecFio:         "",
-	   		AddAmount:       "",
-	   		RuleID:          "",
-	   		ExecID:          "",
-	   		RegType:         "",
-	   		UIN:             "",
-	   		TechCode:        "",
-	   	} */
-
+	   		LastName:     "Иванов",
+	   		FirstName:    "Иван",
+	   		MiddleName:   "Иванович",
+	   		PayerAddress: "г.Рязань ул.Ленина д.10 кв.15",
+	   		// PersonalAccount: "",
+	   		// DocIdx:          "",
+	   		// PensAcc:         "",
+	   		// Contract:        "",
+	   		// PersAcc:         "",
+	   		// Flat:            "",
+	   		Phone: "79101234567",
+	   		// PayerIDType:     "",
+	   		// PayerIDNum:      "",
+	   		// ChildFio:        "",
+	   		// BirthDate:       "",
+	   		// PaymTerm:        "",
+	   		// PaymPeriod:      "",
+	   		// Category:        "",
+	   		// ServiceName:     "",
+	   		// CounterID:       "",
+	   		// CounterVal:      "",
+	   		// QuittID:         "",
+	   		// QuittDate:       "",
+	   		// InstNum:         "",
+	   		// ClassNum:        "",
+	   		// SpecFio:         "",
+	   		// AddAmount:       "",
+	   		// RuleID:          "",
+	   		// ExecID:          "",
+	   		// RegType:         "",
+	   		// UIN:             "",
+	   		// TechCode:        "",
+	   	}
+	*/
 	// fmt.Println(StdUtf8 + "|" + paycore.QRgenPayCore(paycore) + "|" + extpay.QRgenPayExt(extpay) + "|" + anotextpay.QRgenPayAnotExt(anotextpay))
 	// QRgen(StdUtf8+"|"+paycore.QRgenPayCore(paycore)+extpay.QRgenPayExt(extpay)+anotextpay.QRgenPayAnotExt(anotextpay), "gen/qr.png")
-	// fmt.Println(paycore.QRgenPayCore(paycore))
-	// fmt.Println(extpay.QRgenPayExt(extpay))
-	// fmt.Println(anotextpay.QRgenPayAnotExt(anotextpay))
 
 	// QRreader("gen/qr.png")
 
 	// fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap) + extpay.QRgenPayExt(extpay) + anotextpay.QRgenPayAnotExt(anotextpay))
-	fmt.Println(cbpmap.QRgenPayCore())
+	/* 	fmt.Println(cbpmap.QRgenPayCore())
+	   	fmt.Println(extpay.QRgenPayExt())
+	   	fmt.Println(anotextpay.QRgenPayAnotExt()) */
+	fmt.Println(cbpmap.GetCoreBankPay())
+
 }

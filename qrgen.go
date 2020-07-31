@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"log"
 	"os"
+	"reflect"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
@@ -32,12 +33,12 @@ func QRgen(text, path string) error {
 	return err
 }
 
-/* func (c *CoreBankPay) AddItem(item MyBoxItem) []MyBoxItem {
-    c.Name = append(c.Name, item)
-    return box.Items
-} */
+// GetCoreBankPay - generate pay info
+func (c *CoreBankPay) GetCoreBankPay() string {
+	return StdUtf8 + "|" + c.Name + "|" + c.PersonalAcc + "|" + c.BankName + "|" + c.BIC + "|" + c.CorrespAcc
+}
 
-// QRgenPay - generate pay info
+// QRgenPayCore - generate pay info
 func (c CoreBankPay) QRgenPayCore() string {
 
 	bytes, err := json.Marshal(c)
@@ -45,6 +46,30 @@ func (c CoreBankPay) QRgenPayCore() string {
 		fmt.Println(err)
 		// return
 	}
+
+	// example 1
+	core := CoreBankPay{}
+	e := reflect.ValueOf(&core).Elem()
+
+	for i := 0; i < e.NumField(); i++ {
+		varName := e.Type().Field(i).Name
+		varType := e.Type().Field(i).Type
+		varValue := e.Field(i).Interface()
+		fmt.Printf("%v %v %v\n", varName, varType, varValue)
+	}
+	// example 2
+	s := reflect.ValueOf(&core).Elem()
+	typeOfT := s.Type()
+
+	for i := 0; i < s.NumField(); i++ {
+		f := s.Field(i)
+		fmt.Printf("%d: %s %s = %v\n", i, typeOfT.Field(i).Name, f.Type(), f.Interface())
+	}
+
+	// The output of this program is
+	//
+	// 0: A int = 23
+	// 1: B string = skidoo
 
 	/*
 		bytes := []byte(b)
@@ -82,26 +107,10 @@ func (c CoreBankPay) QRgenPayCore() string {
 	return string(bytes)
 }
 
-// QRgenPay - generate pay info
-func (c ExtendBankPay) QRgenPayExt(extpay ExtendBankPay) string {
+// QRgenPayExt - generate pay info
+func (e ExtendBankPay) QRgenPayExt() string {
 
-	ebpmap := &ExtendBankPay{
-		Sum:          extpay.Sum,
-		Purpose:      extpay.Purpose,
-		PayeeINN:     extpay.PayeeINN,
-		PayerINN:     extpay.PayerINN,
-		DrawerStatus: extpay.DrawerStatus,
-		KPP:          extpay.KPP,
-		CBC:          extpay.CBC,
-		OKTMO:        extpay.OKTMO,
-		PaytReason:   extpay.PaytReason,
-		TaxPeriod:    extpay.TaxPeriod,
-		DocNo:        extpay.DocNo,
-		DocDate:      extpay.DocDate,
-		TaxPaytKind:  extpay.TaxPaytKind,
-	}
-
-	b, err := json.Marshal(ebpmap)
+	b, err := json.Marshal(e)
 	if err != nil {
 		fmt.Println(err)
 		// return
@@ -111,45 +120,10 @@ func (c ExtendBankPay) QRgenPayExt(extpay ExtendBankPay) string {
 
 }
 
-// QRgenPay - generate pay info
-func (c AnotherExtendBankPay) QRgenPayAnotExt(advextpay AnotherExtendBankPay) string {
+// QRgenPayAnotExt - generate pay info
+func (a AnotherExtendBankPay) QRgenPayAnotExt() string {
 
-	ebpmap := &AnotherExtendBankPay{
-		LastName:        advextpay.LastName,
-		FirstName:       advextpay.FirstName,
-		MiddleName:      advextpay.MiddleName,
-		PayerAddress:    advextpay.PayerAddress,
-		PersonalAccount: advextpay.PersonalAccount,
-		DocIdx:          advextpay.DocIdx,
-		PensAcc:         advextpay.PensAcc,
-		Contract:        advextpay.Contract,
-		PersAcc:         advextpay.PersAcc,
-		Flat:            advextpay.Flat,
-		Phone:           advextpay.Phone,
-		PayerIDType:     advextpay.PayerIDType,
-		PayerIDNum:      advextpay.PayerIDNum,
-		ChildFio:        advextpay.ChildFio,
-		BirthDate:       advextpay.BirthDate,
-		PaymTerm:        advextpay.PaymTerm,
-		PaymPeriod:      advextpay.PaymPeriod,
-		Category:        advextpay.Category,
-		ServiceName:     advextpay.ServiceName,
-		CounterID:       advextpay.CounterID,
-		CounterVal:      advextpay.CounterVal,
-		QuittID:         advextpay.QuittID,
-		QuittDate:       advextpay.QuittDate,
-		InstNum:         advextpay.InstNum,
-		ClassNum:        advextpay.ClassNum,
-		SpecFio:         advextpay.SpecFio,
-		AddAmount:       advextpay.AddAmount,
-		RuleID:          advextpay.RuleID,
-		ExecID:          advextpay.ExecID,
-		RegType:         advextpay.RegType,
-		UIN:             advextpay.UIN,
-		TechCode:        advextpay.TechCode,
-	}
-
-	b, err := json.Marshal(ebpmap)
+	b, err := json.Marshal(a)
 	if err != nil {
 		fmt.Println(err)
 		// return

@@ -1,5 +1,13 @@
 package main
 
+// ST          string // Идентификатор формата (формат «свой»)
+// FormatVer   string // Версия формата
+// CodeText    string // кодировка
+// ST          string // Служебный блок
+
+// 1 (соответствует Windows-1251) – будет выводиться ST00011;
+// 2 (соответствует UTF-8) – будет выводиться ST00012.
+
 // StdUtf8 - Standart coding UTF8
 const StdUtf8 = "ST00012"
 
@@ -13,10 +21,6 @@ type KV struct {
 
 // CoreBankPay - Обязательные реквизиты (блок «Payee» УФЭБС[5])
 type CoreBankPay struct {
-	// ST          string // Идентификатор формата (формат «свой»)
-	// FormatVer   string // Версия формата
-	// CodeText    string // кодировка
-	// ST          string // Служебный блок
 	Name        string `json:"Name"`        // Наименование получателя платежа - Макс. 160 знаков (имя тега по [5] : Payee/ Name)
 	PersonalAcc string `json:"PersonalAcc"` // Номер счета получателя платежа - Макс. 20 знаков (имя тега по [5] : Payee/ PersonalAcc)
 	BankName    string `json:"BankName"`    // Наименование банка получателя платежа - Макс. 45 знаков (не определен [5])
