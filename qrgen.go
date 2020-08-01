@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"image/png"
 	"log"
@@ -33,43 +33,31 @@ func QRgen(text, path string) error {
 	return err
 }
 
-// GetCoreBankPay - generate pay info
-func (c *CoreBankPay) GetCoreBankPay() string {
-	return StdUtf8 + "|" + c.Name + "|" + c.PersonalAcc + "|" + c.BankName + "|" + c.BIC + "|" + c.CorrespAcc
-}
-
 // QRgenPayCore - generate pay info
-func (c CoreBankPay) QRgenPayCore() string {
+func (c *CoreBankPay) QRgenPayCore() string {
 
-	bytes, err := json.Marshal(c)
-	if err != nil {
-		fmt.Println(err)
-		// return
-	}
+	// var bytes bytes.Buffer
+	buff := new(bytes.Buffer)
 
-	// example 1
-	core := CoreBankPay{}
-	e := reflect.ValueOf(&core).Elem()
-
-	for i := 0; i < e.NumField(); i++ {
-		varName := e.Type().Field(i).Name
-		varType := e.Type().Field(i).Type
-		varValue := e.Field(i).Interface()
-		fmt.Printf("%v %v %v\n", varName, varType, varValue)
-	}
-	// example 2
-	s := reflect.ValueOf(&core).Elem()
-	typeOfT := s.Type()
+	s := reflect.ValueOf(c).Elem()
 
 	for i := 0; i < s.NumField(); i++ {
-		f := s.Field(i)
-		fmt.Printf("%d: %s %s = %v\n", i, typeOfT.Field(i).Name, f.Type(), f.Interface())
+		nameField := s.Type().Field(i).Name
+		valueField := s.Field(i).Interface()
+		// typeField := s.Type().Field(i).Type
+		// Field := s.Type().Field(i)
+		// varTag := Field.Tag
+
+		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
 	}
 
-	// The output of this program is
-	//
-	// 0: A int = 23
-	// 1: B string = skidoo
+	/*
+		b, err := json.Marshal(c)
+		if err != nil {
+			fmt.Println(err)
+			// return
+		}
+	*/
 
 	/*
 		bytes := []byte(b)
@@ -82,52 +70,46 @@ func (c CoreBankPay) QRgenPayCore() string {
 	// Loop over structs and display them.
 
 	/*
-		for c := range coreBankPay {
-		fmt.Printf("%v=%v|", coreBankPay[c], coreBankPay[c])
-		fmt.Println()
-		}
-	*/
-
-	// New Buffer.
-
-	/*
-	   buff := new(bytes.Buffer)
-	   	fmt.Fprintf(buff, "%s=%s|", cbpmap)
-	   	return buff.String()
-	*/
-
-	/*
 		b := []byte(bytes)
 		err1 := json.Unmarshal(b, &cbpmap)
 		if err1 != nil {
 			panic(err1)
 		}
 	*/
-	// return core
-	return string(bytes)
+
+	return buff.String()
 }
 
 // QRgenPayExt - generate pay info
 func (e ExtendBankPay) QRgenPayExt() string {
 
-	b, err := json.Marshal(e)
-	if err != nil {
-		fmt.Println(err)
-		// return
+	buff := new(bytes.Buffer)
+
+	s := reflect.ValueOf(e).Elem()
+
+	for i := 0; i < s.NumField(); i++ {
+		nameField := s.Type().Field(i).Name
+		valueField := s.Field(i).Interface()
+
+		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
 	}
 
-	return string(b)
-
+	return buff.String()
 }
 
 // QRgenPayAnotExt - generate pay info
 func (a AnotherExtendBankPay) QRgenPayAnotExt() string {
 
-	b, err := json.Marshal(a)
-	if err != nil {
-		fmt.Println(err)
-		// return
+	buff := new(bytes.Buffer)
+
+	s := reflect.ValueOf(a).Elem()
+
+	for i := 0; i < s.NumField(); i++ {
+		nameField := s.Type().Field(i).Name
+		valueField := s.Field(i).Interface()
+
+		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
 	}
 
-	return string(b)
+	return buff.String()
 }

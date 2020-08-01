@@ -14,11 +14,6 @@ const StdUtf8 = "ST00012"
 // StdWin1251 - Standart coding Win1251
 const StdWin1251 = "ST00011"
 
-type KV struct {
-	key   string
-	value string
-}
-
 // CoreBankPay - Обязательные реквизиты (блок «Payee» УФЭБС[5])
 type CoreBankPay struct {
 	Name        string `json:"Name"`        // Наименование получателя платежа - Макс. 160 знаков (имя тега по [5] : Payee/ Name)
@@ -60,8 +55,8 @@ type AnotherExtendBankPay struct {
 	PersAcc         string `json:"PersAcc"`         // Номер лицевого счета плательщика в организации (в системе учета ПУ)
 	Flat            string `json:"Flat"`            // Номер квартиры
 	Phone           string `json:"Phone"`           // Номер телефона
-	PayerIDType     string `json:"PayerIDType"`     // PayerIdType - Вид ДУЛ плательщика
-	PayerIDNum      string `json:"PayerIDNum"`      // PayerIdNum - Номер ДУЛ плательщика
+	PayerIDType     string `json:"PayerIdType"`     // PayerIdType - Вид ДУЛ плательщика
+	PayerIDNum      string `json:"PayerIdNum"`      // PayerIdNum - Номер ДУЛ плательщика
 	ChildFio        string `json:"ChildFio"`        // Ф.И.О. ребенка/учащегося
 	BirthDate       string `json:"BirthDate"`       // Дата рождения
 	PaymTerm        string `json:"PaymTerm"`        // Срок платежа/дата выставления счета
@@ -70,14 +65,14 @@ type AnotherExtendBankPay struct {
 	ServiceName     string `json:"ServiceName"`     // Код услуги/название прибора учета
 	CounterID       string `json:"CounterID"`       // CounterId - Номер прибора учета
 	CounterVal      string `json:"CounterVal"`      // Показание прибора учета
-	QuittID         string `json:"QuittID"`         // QuittId - Номер извещения, начисления, счета
+	QuittID         string `json:"QuittId"`         // QuittId - Номер извещения, начисления, счета
 	QuittDate       string `json:"QuittDate"`       // Дата извещения/начисления/счета/постановления (для ГИБДД)
 	InstNum         string `json:"InstNum"`         // Номер учреждения (образовательного, медицинского)
 	ClassNum        string `json:"ClassNum"`        // Номер группы детсада/класса школы
 	SpecFio         string `json:"SpecFio"`         // ФИО преподавателя, специалиста, оказывающего услугу
 	AddAmount       string `json:"AddAmount"`       // Сумма страховки/дополнительной услуги/Сумма пени (в копейках)
-	RuleID          string `json:"RuleID"`          // RuleId - Номер постановления (для ГИБДД)
-	ExecID          string `json:"ExecID"`          // ExecId - Номер исполнительного производства
+	RuleID          string `json:"RuleId"`          // RuleId - Номер постановления (для ГИБДД)
+	ExecID          string `json:"ExecId"`          // ExecId - Номер исполнительного производства
 	RegType         string `json:"RegType"`         // Код вида платежа (например, для платежей в адрес Росреестра)
 	UIN             string `json:"UIN"`             //Уникальный идентификатор начисления
 	TechCode        string `json:"TechCode"`        /* Технический код, рекомендуемый для заполнения поставщиком услуг. Может

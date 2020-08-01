@@ -7,10 +7,10 @@ import "fmt"
 func main() {
 	// QRgen("http://yandex.ru", "gen/qr.png")
 
-	cbpmap := CoreBankPay{
+	cbpmap := &CoreBankPay{
 		Name:        "ООО «Три кита»",
 		PersonalAcc: "40702810138250123017",
-		BankName:    "ОАО 'БАНК'",
+		BankName:    "ОАО \"БАНК\"",
 		BIC:         "044525225",
 		CorrespAcc:  "30101810400000000225",
 	}
@@ -72,9 +72,9 @@ func main() {
 	// QRreader("gen/qr.png")
 
 	// fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap) + extpay.QRgenPayExt(extpay) + anotextpay.QRgenPayAnotExt(anotextpay))
-	/* 	fmt.Println(cbpmap.QRgenPayCore())
-	   	fmt.Println(extpay.QRgenPayExt())
-	   	fmt.Println(anotextpay.QRgenPayAnotExt()) */
-	fmt.Println(cbpmap.GetCoreBankPay())
+	fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore())
+	// fmt.Println(extpay.QRgenPayExt())
+	// fmt.Println(anotextpay.QRgenPayAnotExt())
+	// fmt.Println(cbpmap.GetCoreBankPay())
 
 }
