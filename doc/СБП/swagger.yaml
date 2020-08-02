@@ -1,0 +1,1628 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  x-logo:
+    url: sbplogo.png
+    backgroundColor: '#1B1537'
+    altText: SBP logo
+  description: |
+    # Общая информация
+
+    На данной странице приведено описание всех методов СБП API для Участников СБП и Агентов ТСП.
+    Агентам ТСП доступны методы для регистрации юридических лиц и ТСП в СБП, а так же регистрации QR кодов для совершения оплаты.
+    Участникам СБП доступен метод для запроса данных QR кода и Merchant по qrcId
+
+    Описание API произведено в формате **Swagger 2.0**.
+
+    Вы можете использовать данный файл для ознакомления с методами API, а также
+    для генерации базового кода для работы с API на удобном для вас языке программирования с помощью
+    утилиты:
+    [**Swagger Codegen**](https://swagger.io/swagger-codegen/) или online
+    сервиса [**Swagger Editor**](https://editor.swagger.io/).
+
+
+    По всем вопросам работы с API необходимо обращаться в Службу Поддержки Агентов СБП:
+    * email: <a href="mailto:C2B_api@nspk.ru">C2B_api@nspk.ru</a>
+    
+    ## Аутентификация
+    Для аутентификации используется TLS 1.2.
+    Для доступа к API, Участник СБП или Агент ТСП устанавливает корневой сертификат УЦ и выпущенный клиент-серверный сертификат.
+
+    ## Ошибки
+    ОПКЦ СБП при обработке запроса от Агента ТСП всегда возвращает стандартный HTTP-код результата обработки и объект ошибки.
+
+    HTTP-код | Описание
+    ----------------------|-------------
+    200 | Успешный ответ.
+    201 | Операция успешно выполнена.
+    400 | Неправильный запрос. Статус выдается из-за нарушения формата или допустимых значений параметров запроса.
+    404 | Ресурс не найден.
+    422 | Некорректное значение параметра запроса.
+    500 | Внутренняя ошибка. Повторите запрос позднее.
+
+    ## История изменений
+
+    Дата | Описание изменений
+    ----------------|-------------
+    01 АПРЕЛЯ 2019 | Запуск API СБП
+    30 МАЯ 2019 | Для методов работы с QR кодами HTTP ответ 422 изменен на 400
+    04 ИЮНЯ 2019 | Добавлено описание метода Запрос статуса операций по Dynamic QR кодам
+    21 АВГУСТА 2019 | Добавлено описание метода Запрос данных QR кода и Merchant по qrcId
+    22 ЯНВАРЯ 2020 | Расширены коды результатов обработки при Регистрации ТСП и при Регистрации и получении QR кодов
+    06 ФЕВРАЛЯ 2020 | Добавлены параметры для получения QR-картинки в метод создания QR, запроса Payload. Метод getImage выведен на промышленный стенд и доступен для использования.
+    01 ИЮНЯ 2020 | добавлены запросы получения реквизитов юридического лица и ТСП по их идентификаторам
+
+    # Описание пользовательских сценариев
+    ## Регистрация ТСП
+    Для регистрации нового ТСП в ОПКЦ СБП, Агент ТСП должен последовательно выполнить следующие запросы:
+    * Регистрация юридического лица. Выполняется, если ранее Агент ТСП не проводил его регистрацию в ОПКЦ СБП
+    * Регистрация счета юридического лица. Выполняется, если ранее Агент ТСП не регистрировал данный счет для юридического лица или если добавляется новый счет для уже зарегистрированного юридического лица.
+    * Регистрация нового ТСП
+
+    Все методы, необходимые для регистрации ТСП представлены в MerchantAPI.
+
+    На схеме представлен положительный сценарий регистрации нового юридического лица, его счета и его ТСП;
+    <a href='img/schemeMerchantApi.png' target='_blank'><img src='img/schemeMerchantApi.png'></a>
+
+    В ответе на запрос регистрации Агент ТСП получит один из следующих кодов результата обработки:
+
+    Код результата обработки | Описание ошибки
+    ----------------|-------------
+    RM00000 | Запрос обработан успешно
+    RM03001 | Ошибка валидации. Неверный формат запроса
+    RM03002 | Ошибка валидации. Некорректная контрольная цифра ИНН
+    RM03003 | Ошибка валидации. Отсутствует КПП
+    RM03004 | Ошибка валидации. Некорректная контрольная цифра ОГРН
+    RM03005 | Ошибка валидации. Длина ОГРН не соответствут длине ИНН
+    RM03006 | Ошибка валидации. Неверный формат почтового индекса юридического лица
+    RM03007 | Ошибка валидации. Неверный формат почтового адреса юридического лица
+    RM03008 | Ошибка валидации. Неверный формат названия города юридического лица
+    RM03009 | Ошибка валидации. Неверный формат номера телефона ТСП
+    RM05001 | Агент с указанным идентификатором не найден
+    RM05002 | Участник с указанным идентификатором не найден
+    RM05003 | Юридическое лицо с указанным идентификатором не найдено
+    RM05004 | Ошибка валидации. Неверный формат страны регистрации юридического лица
+    RM05005 | Ошибка валидации. Неверный формат региона юридического лица
+    RM05007 | Ошибка валидации. Неверный формат кода страны ТСП
+    RM05008 | Ошибка валидации. Неверный формат кода региона ТСП
+    RM05009 | Неверное значение возможности точки взаимодействия с покупателем
+    RM05010 | Указанное недопустимое значение MCC
+    RM05012 | Ошибка валидации. Неверный формат наименования ТСП
+    RM05013 | Ошибка валидации. Неверный формат наименования юридического лица
+    RM05015 | ТСП с указанным идентификатором не найдено
+    RM05900 | Временный регистрационный номер не найден
+    RM07001 | Дубликат. Юридическое лицо уже зарегистрировано
+    RM07002 | Дубликат. Счет юридического лица уже зарегистрирован
+    RM07003 | Дубликат. ТСП уже зарегистировано
+    RM07999 | Техническая ошибка
+
+    ## Регистрация и получение QR кодов
+    В СБП присутствуют два типа сценария QR кодов:
+    * QR Static (QR наклейка);
+    * QR Dynamic (QR на кассе).
+
+    Запросить формирование QR кода возможно только для ТСП, уже зарегистрированных в ОПКЦ СБП. Тип запрашиваемого QR кода указывается в параметрах запроса.
+    Для QR Static Агент ТСП может указать сумму операции и дополнительное поле с описанием (назначение платежа), которое может быть отображено покупателю после считывания данных QR кода;
+    Для QR Dynamic указание суммы операции обязательно.
+
+    Все методы, необходимые для работы с QR кодами представлены в PaymentApi.
+
+    На схеме представлен положительный сценарий запроса QR кода;
+    <a href='img/schemePaymentApi.png' target='_blank'><img src='img/schemePaymentApi.png'></a>
+
+    В ответе на запрос регистрации QR кода Агент ТСП получит один из следующих кодов результата обработки:
+
+    Код результата обработки | Описание ошибки
+    ----------------|-------------
+    RQ00000 | Запрос обработан успешно
+    RQ03001 | Ошибка валидации. Не верный формат запроса
+    RQ05001 | Агент с указанным идентификатором не найден
+    RQ05002 | Участник с указанным идентификатором не найден
+    RQ05003 | Юридическое лицо с указанным идентификатором не найдено
+    RQ05004 | Счет юридического лица не найден
+    RQ05005 | ТСП с указанным идентификатором не зарегистрировано в СБП
+    RQ05006 | Неверный код валюты
+    RQ05007 | Неверная версия шаблона QRC
+    RQ05008 | Неверный тип QRC
+    RQ05009 | Сумма операции меньше минимально допустимой
+    RQ05010 | Сумма операции больше максимально допустимой
+    RQ05011 | Сумма и код валюты должны одновременно присутствовать или одновременно отсутствовать в запросе на QRC Static
+    RQ05012 | Отсутствует код валюты в запросе на QRC Dynamic
+    RQ05013 | Отсутствует сумма в запросе на QRC Dynamic
+    RQ05014 | QR с указанным идентификатором не найден
+    RQ05015 | Превышено допустимое - %value% значение элементов в запросе
+    RQ05016 | Неверный формат идентификатора QRC
+    RQ05017 | Некорректный формат поля payment purpose
+    RQ07999 | Техническая ошибка
+
+    # Формат QR кодов
+    ## URL-based QR
+
+    В СБП используется формат двухмерного кода QR Code (ISO/IEC 18004-2015).
+
+    Payload QR кода представляет собой URL c параметрами:
+
+    <pre>https://HOST/QR_ID?type=QR_TYPE&bank=MEMBER_ID&sum=SUM&cur=CUR&crc=CRC</pre>
+
+    **Описание параметров URL-based payload:**
+
+    Параметр | Описание | Обязательность | Формат
+    ---------|----------|----------------|-------
+    HOST | Константа qr.nspk.ru | Да | String
+    QR_ID | Идентификатор зарегистрированного QR кода в СБП | Да | String 32 символа
+    QR_TYPE | Тип QR кода: <br> 01 - QR Static (QR наклейка); <br> 02 - QR Dynamic (QR на кассе). | Да | String 2 цифры
+    MEMBER_ID | Идентификатор Банка Получателя (ТСП) (Member_ID) | Да | String 12 символов
+    SUM | Сумма в копейках | Да, если QR_TYPE = 02 | String до 12 цифр
+    CUR | Валюта операции | Да, если присутствует SUM | String 3 символа
+    CRC | Значение контрольной суммы | Да | String 4 символа
+
+    Пример URL-based payload:
+
+    <pre>https://qr.nspk.ru/AS10003P3RH0LJ2A9ROO038L6NT5RU1M?type=01&bank=000000000001&sum=10000&cur=RUB&crc=F3D0</pre>
+
+    Пример QR кода:
+
+    <a href='img/QR_with_logo.png' target='_blank'><img src='img/QR_with_logo.png'></a>
+
+  title: СБП API для Участников СБП и Агентов ТСП
+tags:
+  - name: MerchantApi
+    x-displayName: MerchantApi
+  - name: PaymentApi
+    x-displayName: PaymentApi
+  - name: LegalEntity
+    x-displayName: Управление юридическими лицами
+    description: |
+      Методы API для регистрации в СБП Юридических лиц. <span style="color:red;">Доступны только по сертификатам Агентов ТСП.</span>
+
+      Регистрация Юридических лиц (далее – ЮЛ) и индивидуальных предпринимателей (далее - ИП) в ОПКЦ СБП состоит из двух последовательных запросов.
+      * В запросе на Регистрацию ЮЛ и ИП передается информация о ЮЛ и ИП. Если структура запроса корректная, ответ содержит Временный регистрационный номер.
+      * Запрос статуса регистрации ЮЛ и ИП позволяет получить статус регистрации ЮЛ и ИП по Временному регистрационному номеру. Ответ содержит статус регистрации и информацию о ЮЛ и ИП.
+      В дальнейшем для зарегистрированного юридического лица можно получить его реквизиты, сделав запрос по его идентификатору.
+  - name: LegalAccount
+    x-displayName: Управление расчетными счетами юридических лиц
+    description: >
+      Методы API для регистрации в СБП расчетных счетов юридических лиц и ИП, куда будут переводиться деньги за совершенные операции в их ТСП. <span style="color:red;">Доступны только по сертификатам Агентов ТСП.</span>
+  - name: Merchant
+    x-displayName: Управление ТСП
+    description: >
+      Методы API для регистрации в СБП ТСП. <span style="color:red;">Доступны только по сертификатам Агентов ТСП.</span>
+  - name: QRCData
+    x-displayName: Операции с QR кодами для Агентов ТСП
+    description: >
+      Методы API для работы с QR кодами, а так же запрос статусов выполнения операций по ним. <span style="color:red;">Доступны только по сертификатам Агентов ТСП.</span>
+  - name: QRCDataForBank
+    x-displayName: Операции с QR кодами для Участников СБП
+    description: >
+      Метод API для запроса дополнительной информации по идентификатору QR кода. <span style="color:red;">Доступны только по сертификатам Участников СБП.</span>
+x-tagGroups:
+  - name: MerchantApi
+    tags:
+      - LegalEntity
+      - LegalAccount
+      - Merchant
+  - name: PaymentApi
+    tags:
+      - QRCData
+      - QRCDataForBank
+paths:
+  /merchant/v1/legal-entity:
+    post:
+      tags:
+        - LegalEntity
+      summary: Регистрация юридического лица
+      operationId: "createLegalEntity"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: LegalEntityDto
+          description: Данные регистрируемого юридического лица
+          required: true
+          schema:
+            $ref: '#/definitions/LegalEntityDto'
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/LegalEntityResultOk'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  '/merchant/v1/legal-entity/registration/{ticketId}':
+    get:
+      tags:
+        - LegalEntity
+      summary: Запрос статуса регистрации юридического лица (Версия 1.0)
+      operationId: "getStatusLegalEntity"
+      produces:
+        - application/json
+      parameters:
+        - name: ticketId
+          in: path
+          description: Временный регистрационный номер
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/LegalTicketResultOk'
+        '422':
+          description: Некорректное значение параметра запроса
+          schema:
+            $ref: '#/definitions/LegalTicketResultBad'
+  '/merchant/v2/legal-entity/registration/{ticketId}':
+    get:
+      tags:
+        - LegalEntity
+      summary: Запрос статуса регистрации юридического лица (Версия 2.0)
+      operationId: "getStatusLegalEntityV2"
+      produces:
+        - application/json
+      parameters:
+        - name: ticketId
+          in: path
+          description: Временный регистрационный номер
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/LegalTicketResultOkV2'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  '/merchant/v1/legal-entity/info/{legalId}':
+    get:
+      tags:
+        - LegalEntity
+      summary: Запрос данных юридического лица
+      operationId: "getLegalData"
+      produces:
+        - application/json
+      parameters:
+        - name: legalId
+          in: path
+          description: Идентификатор юридического лица в СБП
+          required: true
+          type: string
+          maxLength: 12
+          minLength: 12
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/LegalDataResultOk'
+        '400':
+          description: Юридическое лицо с указанным идентификатором не найдено
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  /merchant/v1/legal-account:
+    post:
+      tags:
+        - LegalAccount
+      summary: Регистрация расчетного счета юридического лица
+      operationId: "createLegalAccount"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: LegalEntityDto
+          description: Данные регистрируемого банковского счета
+          required: true
+          schema:
+            $ref: '#/definitions/LegalAccountDto'
+      responses:
+        '201':
+          description: Операция успешно выполнена
+          schema:
+            $ref: '#/definitions/LegalAccountResultOk'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+        '422':
+          description: Некорректное значение параметра запроса
+          schema:
+            $ref: '#/definitions/LegalAccountResultBad'
+  /merchant/v1/merchant:
+    post:
+      tags:
+        - Merchant
+      summary: Регистрация ТСП
+      operationId: "createMerchant"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: merchantDto
+          description: Данные регистрируемого ТСП
+          required: true
+          schema:
+            $ref: '#/definitions/MerchantDto'
+      responses:
+        '201':
+          description: Операция успешно выполнена
+          schema:
+            $ref: '#/definitions/MerchantResultOk'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+        '422':
+          description: Некорректное значение параметра запроса
+          schema:
+            $ref: '#/definitions/MerchantResultBad'
+  '/merchant/v1/merchant/info/{merchantId}':
+    get:
+      tags:
+        - Merchant
+      summary: Запрос данных ТСП
+      operationId: "getMerchantData"
+      produces:
+        - application/json
+      parameters:
+        - name: merchantId
+          in: path
+          description: Идентификатор ТСП в СБП
+          required: true
+          type: string
+          maxLength: 12
+          minLength: 12
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/MerchantDataResultOk'
+        '400':
+          description: Юридическое лицо с указанным идентификатором не найдено
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  /payment/v1/qrc-data:
+    post:
+      tags:
+        - QRCData
+      summary: Регистрация QR-кода
+      operationId: "createQRC"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: mediaType
+          type: string
+          enum: [image/png, image/svg+xml]
+          description: Опциональное получение QR-картинки
+          required: false
+        - in: query
+          name: width
+          type: integer
+          description: Ширина изображения
+          required: false
+          default: 300
+          minimum: 200
+        - in: query
+          name: height
+          type: integer
+          description: Высота изображения
+          required: false
+          default: 300
+          minimum: 200
+        - in: body
+          name: qrcDataDto
+          description: Данные запрашиваемого QR кода
+          required: true
+          schema:
+            $ref: '#/definitions/QrcDataDto'
+      responses:
+        '201':
+          description: Операция успешно выполнена
+          schema:
+            $ref: '#/definitions/qrcDataResultOk'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  '/payment/v1/qrc-data/{qrcId}/payload':
+    get:
+      tags:
+        - QRCData
+      summary: 'Запрос payload для ранее зарегистрированного QR-кода'
+      operationId: "getQRCPayload"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: qrcId
+          in: path
+          description: Идентификатор зарегистрированного QR кода в СБП
+          required: true
+          type: string
+          maxLength: 32
+        - in: query
+          name: mediaType
+          type: string
+          enum: [image/png, image/svg+xml]
+          description: Опциональное получение QR картинки 
+          required: false
+        - in: query
+          name: width
+          type: integer
+          description: Ширина изображения
+          required: false
+          default: 300
+          minimum: 200
+        - in: query
+          name: height
+          type: integer
+          description: Высота изображения
+          required: false
+          default: 300
+          minimum: 200  
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/qrcPayloadResultOk'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  '/payment/v1/qrc-data/{qrcId}/image':
+    get:
+      tags:
+        - QRCData
+      summary: 'Запрос изображения, ранее зарегистрированного QR кода'
+      operationId: "getQRCImage"
+      description: |
+      consumes:
+        - application/json
+      produces:
+        - application/json
+        - image/png
+      parameters:
+        - name: qrcId
+          in: path
+          description: Идентификатор зарегистрированного QR кода в СБП
+          required: true
+          type: string
+          maxLength: 32
+        - in: header
+          name: Accept
+          type: string
+          enum: [image/png, image/svg+xml]
+          required: true
+          default: image/png  
+        - in: query
+          name: width
+          type: integer
+          description: Ширина изображения
+          required: false
+          default: 300
+          minimum: 200
+        - in: query
+          name: height
+          type: integer
+          description: Высота изображения
+          required: false
+          default: 300
+          minimum: 200  
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            type: file
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  /payment/v1/qrc-status:
+    put:
+      tags:
+        - QRCData
+      summary: Запрос статуса операций по Dynamic QR кодам
+      operationId: "getStatusQRCOperations"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: qrcStatusDto
+          description: qrcId по которым необходимо получить статусы операций
+          required: true
+          schema:
+            $ref: '#/definitions/qrcStatusDto'
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/qrcStatusResultOk'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+  /payment/v1/paymentdata/{qrcId}:
+    get:
+      tags:
+        - QRCDataForBank
+      summary: Запрос данных QR кода и Merchant по qrcId
+      operationId: "getQRCAndMerchantData"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: qrcId
+          in: path
+          description: Идентификатор зарегистрированного QR кода в СБП
+          required: true
+          type: string
+          maxLength: 32
+      responses:
+        '200':
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/paymentdataResultOk'
+        '400':
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/Error400ResultData'
+definitions:
+  Error400ResultData:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа
+        maxLength: 7
+      message:
+        type: string
+        description: Описание кода ответа
+        maxLength: 255
+      data:
+        type: 'null'
+    required:
+      - code
+      - message
+    title: Стандартный ответ на код ошибки 400
+  LegalEntityDto:
+    type: object
+    properties:
+      agentId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор агента
+        example: A00000000001
+      name:
+        type: string
+        description: Сокращенное наименование юридического лица
+        maxLength: 140
+        example: АО "НСПК"
+      type:
+        type: string
+        description: Организационно-правовая форма юридического лица
+        minLength: 2
+        maxLength: 10
+        example: АО
+      inn:
+        type: string
+        minLength: 10
+        maxLength: 12
+        description: ИНН
+        example: '7706812159'
+      kpp:
+        type: string
+        minLength: 9
+        maxLength: 9
+        description: |
+          КПП
+
+          Поле обязательно при регистрации Юридического лица, и должно отсутствовать при регистрации ИП.
+        example: '770501001'
+      ogrn:
+        type: string
+        minLength: 13
+        maxLength: 15
+        description: ОГРН
+        example: '1147746831352'
+      countryCode:
+        type: string
+        minLength: 2
+        maxLength: 2
+        description: >-
+          Код страны-регистрации юридического лица, в формате "ISO 3166,
+          Alpha-2"
+        example: RU
+      countrySubDivisionCode:
+        type: string
+        minLength: 2
+        maxLength: 2
+        description: 'Код региона-регистрации юридического лица, первые две цифры кода ОКТМО'
+        example: '45'
+      city:
+        type: string
+        description: Город
+        maxLength: 140
+        example: Москва
+      zip:
+        type: string
+        minLength: 6
+        maxLength: 6
+        description: Индекс
+        example: '115184'
+      address:
+        type: string
+        description: Юридический адрес
+        maxLength: 140
+        example: 'улица Большая Татарская, дом 11'
+    required:
+      - agentId
+      - type
+      - ogrn
+      - countryCode
+      - countrySubDivisionCode
+      - address
+    optional:
+      - name    
+      - inn
+      - city
+      - zip
+    title: Данные регистрируемого юридического лица
+  LegalEntityResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        $ref: '#/definitions/LegalEntityResultData'
+    required:
+      - code
+      - message
+      - data
+    title: Успешный ответ на запрос регистрации юр.лица
+  LegalEntityResultData:
+    type: object
+    properties:
+      ticketId:
+        type: string
+        description: Временный регистрационный номер
+        minLength: 32
+        maxLength: 32
+        example: b5ffebc7ee9b4c3bb8865eaec4e6ab05
+    required:
+      - ticketId
+    title: Ответ на запрос регистрации юр.лица (блок data)
+  LegalTicketResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        $ref: '#/definitions/LegalTicketResultData'
+    required:
+      - code
+      - message
+      - data
+    title: Успешный ответ на запрос статуса регистрации юр.лица
+  LegalTicketResultOkV2:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        $ref: '#/definitions/LegalTicketResultDataV2'
+    required:
+      - code
+      - message
+      - data
+    title: Запрос на регистрацию ЮЛ и ИП успешно обработан    
+  LegalTicketResultInProcess:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        $ref: '#/definitions/LegalTicketResultInProcessData'
+    required:
+      - code
+      - message
+      - data
+    title: Запрос на регистрацию ЮЛ и ИП обрабатывается
+  LegalTicketResultBad:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+      data:
+        type: 'null'
+    required:
+      - code
+      - message
+    title: Неуспешный ответ на запрос статуса регистрации юр.лица
+  LegalDataResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RM00000
+      data:
+        $ref: '#/definitions/LegalShortDto'
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+    required:
+      - code
+      - data
+      - message
+    title: Успешный ответ на запрос данных юридического лица
+  MerchantDataResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RM00000
+      data:
+        $ref: '#/definitions/MerchantShortDto'
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+    required:
+      - code
+      - data
+      - message
+    title: Успешный ответ на запрос данных юридического лица
+  LegalTicketResultData:
+    type: object
+    properties:
+      legalId:
+        type: string
+        description: Идентификатор зарегистрированного юридического лица в СБП
+        minLength: 12
+        maxLength: 12
+        example: LF0000000001
+      status:
+        type: string
+        description: Статус регистрации юридического лица
+        enum:
+          - IN_PROCESS
+          - CREATED
+          - ERROR
+        example: CREATED
+      code:
+        type: string
+        description: Код ответа на результат регистрации юридического лица
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа на результат регистрации юридического лица
+        maxLength: 255
+        example: Запрос обработан успешно
+    required:
+      - status
+    title: Ответ на запрос статуса регистрации юр.лица при успешной регистрации
+  LegalTicketResultInProcessData:
+    type: object
+    properties:
+      legalId:
+        type: string
+        description: Идентификатор зарегистрированного юридического лица в СБП
+        minLength: 12
+        maxLength: 12
+        example: LF0000000001
+      status:
+        type: string
+        description: Статус регистрации юридического лица
+        enum:
+          - IN_PROCESS
+          - CREATED
+          - ERROR
+        example: IN_PROCESS
+      code:
+        type: 'null'
+      message:
+        type: 'null'
+    required:
+      - status
+      - legalId
+      - code
+      - message   
+    title: Запрос на регистрацию ЮЛ и ИП в настоящий момент обрабатывается
+  LegalTicketResultDataV2:
+    type: object
+    properties:
+      legalId:
+        type: string
+        description: Идентификатор зарегистрированного юридического лица в СБП
+        minLength: 12
+        maxLength: 12
+        example: LF0000000001
+      status:
+        type: string
+        description: Статус регистрации юридического лица
+        enum:
+          - IN_PROCESS
+          - CREATED
+          - ERROR
+        example: CREATED
+      code:
+        type: string
+        description: Код ответа на результат регистрации юридического лица
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа на результат регистрации юридического лица
+        maxLength: 255
+        example: Запрос обработан успешно
+      legalEntity:
+        $ref: '#/definitions/LegalEntityData'  
+    required:
+      - status
+    optional:
+      - legalEntity    
+    title: Ответ на запрос статуса регистрации юр.лица при успешной регистрации
+  LegalEntityData:
+    type: object
+    properties:
+      agentId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор агента
+        example: A00000000001
+      name:
+        type: string
+        description: Сокращенное наименование юридического лица
+        example:  "АО \"НСПК\""
+        maxLength: 500        
+      type:
+        type: string
+        description: Организационно-правовая форма юридического лица
+        minLength: 2
+        maxLength: 10
+        example: АО
+      inn:
+        type: string
+        description: Идентификационный номер налогоплательщика
+        minLength: 10
+        maxLength: 12
+        example: '7706812159'
+      kpp:
+        type: string
+        minLength: 9
+        maxLength: 9
+        description: Код причины постановки на учет
+        example: '770501001'
+      ogrn:
+        type: string
+        description: Основной государственный регистрационный номер
+        minLength: 12
+        maxLength: 15
+        example: '1147746831352'
+      countryCode:
+        type: string
+        minLength: 2
+        maxLength: 2
+        description: >-
+          Код страны-регистрации юридического лица, в формате "ISO 3166,
+          Alpha-2"
+        example: RU
+      countrySubDivisionCode:
+        type: string
+        minLength: 2
+        maxLength: 2
+        description: 'Код региона-регистрации юридического лица'
+        example: '45'
+      city:
+        type: string
+        description: Город
+        maxLength: 140
+        example: Москва
+      zip:
+        type: string
+        minLength: 6
+        maxLength: 6
+        description: Индекс
+        example: '115184'
+      address:
+        type: string
+        description: Юридический адрес
+        maxLength: 500
+        example: 'улица Большая Татарская, дом 11'
+    required:
+      - agentId
+      - name
+      - type
+      - inn
+      - kpp
+      - ogrn
+      - countryCode
+      - countrySubDivisionCode
+      - city
+      - zip
+      - address
+    title: Данные зарегистрированного ЮЛ и ИП
+  LegalShortDto:
+    type: object
+    properties:
+      legalId:
+        type: string
+        description: Идентификатор юридического лица в СБП
+        minLength: 12
+        maxLength: 12
+        example: 'LF0000000001'
+      name:
+        type: string
+        description: Наименования юридического лица
+        example: 'OOO Ромашка'
+      ogrn:
+        type: string
+        description: ОГРН
+        minLength: 12
+        maxLength: 15
+        example: '1053600591197'
+      inn:
+        type: string
+        description: ИНН
+        minLength: 10
+        maxLength: 12
+        example: '3664069397'
+    required:
+      - status
+    title: Ответ на запрос данных юридического лица
+  LegalAccountDto:
+    type: object
+    properties:
+      agentId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор агента
+        example: A00000000001
+      legalId:
+        type: string
+        description: Идентификатор юридического лица в СБП
+        minLength: 12
+        maxLength: 12
+        example: LF0000000001
+      memberId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор банка-участника СБП
+        example: '100000000001'
+      account:
+        type: string
+        minLength: 20
+        maxLength: 20
+        description: Счет юридического лица
+        example: '40702810100010000001'
+    required:
+      - agentId
+      - legalId
+      - memberId
+      - account
+    title: Данные регистрируемого банковского счета
+  LegalAccountResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        $ref: '#/definitions/LegalAccountResultData'
+    required:
+      - code
+      - message
+      - data
+    title: Успешный ответ на запрос регистрации счета юр лица
+  LegalAccountResultBad:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+      data:
+        type: 'null'
+    required:
+      - code
+      - message
+    title: Неуспешный ответ на запрос регистрации счета юр.лица
+  LegalAccountResultData:
+    type: object
+    properties:
+      account:
+        type: string
+        description: Зарегистрированный счет в СБП
+        minLength: 20
+        maxLength: 20
+        example: '40702810100010000001'
+      status:
+        type: string
+        description: Статус регистрации счета юридического лица
+        enum:
+          - CREATED
+        example: CREATED
+    required:
+      - account
+      - status
+    title: Ответные данные на запрос регистрации счета юр лица (блок data)
+  MerchantDto:
+    type: object
+    properties:
+      agentId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор агента
+        example: A00000000001
+      legalId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор юридического лица
+        example: LF0000000001
+      brandName:
+        type: string
+        maxLength: 35
+        description: Название ТСП (имя по вывеске)
+        example: Кофейня у Артема
+      mcc:
+        type: string
+        minLength: 4
+        maxLength: 4
+        description: MCC код
+        example: '4122'
+      countryCode:
+        type: string
+        minLength: 2
+        maxLength: 2
+        description: >-
+          Код страны-регистрации ТСП, в формате "ISO 3166,
+          Alpha-2"
+        example: RU
+      countrySubDivisionCode:
+        type: string
+        minLength: 2
+        maxLength: 2
+        description: 'Код региона-регистрации ТСП'
+        example: '45'
+      city:
+        type: string
+        description: Город
+        maxLength: 140
+        example: Москва
+      zip:
+        type: string
+        minLength: 6
+        maxLength: 6
+        description: Индекс
+        example: '115184'
+      address:
+        type: string
+        description: Фактический адрес ТСП
+        maxLength: 140
+        example: 'улица Большая Татарская, дом 11'
+      contactPhoneNumber:
+        type: string
+        description: Контактный номер телефона ТСП
+        minLength: 10
+        maxLength: 13
+        example: '79991234567'
+      capabilities:
+        type: string
+        minLength: 3
+        maxLength: 3
+        description: Поле зарезервировано под будущие изменения.
+    required:
+      - agentId
+      - legalId
+      - brandName
+      - mcc
+      - countryCode
+      - countrySubDivisionCode
+      - city
+      - zip
+      - address
+      - contactPhoneNumber
+    optional:
+      - capabilities
+    title: Данные регистрируемого ТСП
+  MerchantResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RM00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        $ref: '#/definitions/MerchantResultData'
+    required:
+      - code
+      - message
+      - data
+    title: Успешный ответ на запрос регистрации ТСП
+  MerchantResultBad:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+      data:
+        type: 'null'
+    required:
+      - code
+      - message
+    title: Успешный ответ на запрос регистрации ТСП
+  MerchantResultData:
+    type: object
+    properties:
+      merchantId:
+        type: string
+        description: Идентификатор зарегистрированного ТСП в СБП
+        minLength: 12
+        maxLength: 12
+        example: MF0000000001
+      status:
+        type: string
+        description: Статус регистрации ТСП
+        enum:
+          - CREATED
+        example: CREATED
+    required:
+      - merchantId
+      - status
+    title: Ответные данные на запрос регистрации ТСП (блок data)
+  MerchantShortDto:
+    type: object
+    properties:
+      merchantId:
+        type: string
+        description: Идентификатор ТСП в СБП
+        minLength: 12
+        maxLength: 12
+        example: 'MR1234567890'
+      brandName:
+        type: string
+        description: Название ТСП (имя по вывеске)
+        example: 'Кофейня у Артема'
+      mcc:
+        type: string
+        description: MCC код
+        minLength: 4
+        maxLength: 4
+        example: '4122'
+      address:
+        type: string
+        description: Адрес ТСП
+        example: 'Москва, улица Большая Татарская, дом 11'
+    required:
+      - status
+    title: Ответ на запрос данных юридического лица
+  QrcDataDto:
+    type: object
+    properties:
+      agentId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор агента
+        example: A00000000001
+      memberId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор банка-участника СБП
+        example: '100000000001'
+      account:
+        type: string
+        minLength: 20
+        maxLength: 20
+        description: Счет юридического лица
+        example: '40702810100010000001'
+      merchantId:
+        type: string
+        minLength: 12
+        maxLength: 12
+        description: Идентификатор ТСП
+        example: MF0000000001
+      templateVersion:
+        type: string
+        enum:
+          - '01'
+        description: |
+          Версия payload QR кода:
+            * 01 - Версия 1
+      qrcType:
+        type: string
+        enum:
+          - '01'
+          - '02'
+        description: |
+          Тип QR кода:
+            * 01 - QR-Static (QR наклейка)
+            * 02 - QR-Dynamic (QR на кассе)
+      amount:
+        type: number
+        description: |
+          Сумма в копейках. Целое, положительное число. Максимум 12 знаков.
+
+          Поле обязательно для заполнения, если Тип QR = QR-Dynamic.
+        example: 10000
+      currency:
+        type: string
+        enum:
+          - RUB
+        description: |
+          Валюта операции:
+            * RUB - Российский рубль
+
+          Поле обязательно для заполнения, если заполнена сумма.
+      paymentPurpose:
+        type: string
+        description: Дополнительная информация от ТСП (Additional Information)
+        maxLength: 140
+    required:
+      - agentId
+      - memberId
+      - account
+      - merchantId
+      - templateVersion
+      - qrcType
+    title: Данные регистрируемого QR кода
+  qrcDataResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RQ00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        type: object
+        properties:
+          qrcId:
+            type: string
+            description: Идентификатор зарегистрированного QR кода в СБП
+            maxLength: 32
+            example: AS1000670LSS7DN18SJQDNP4B05KLJL2
+          payload:
+            type: string
+            description: Payload зарегистрированного QR кода в СБП
+            maxLength: 999
+            example: 'https://qr.nspk.ru/AS1000670LSS7DN18SJQDNP4B05KLJL2?type=01&bank=100000000001&sum=10000&cur=RUB&crc=C08B'
+          status:
+            type: string
+            description: Статус регистрации QR кода в СБП
+            enum:
+              - CREATED
+            example: CREATED
+          image:
+            $ref: '#/definitions/imageDataDto'
+        required:
+          - qrcId
+          - payload
+          - status
+    required:
+      - code
+      - message
+      - data
+    title: Успешный ответ на запрос регистрации QR кода
+  imageDataDto:
+            type: object
+            properties:
+              mediaType:
+                type: string
+                enum:
+                  - 'image/png'
+                  - 'image/svg+xml'
+                description: |
+                  Формат получаемого файла:
+                    * image/png - png
+                    * image/svg+xml - xml of svg
+                example: image/png    
+              content:
+                type: string
+                description: base64encoded image. Формат для декодирования зависит от mediaType
+                example: iVBORw0KGgoAAAANSUhEUgAABEoAAARKCAIAAADXJAK3AAAABmJLR0QA/wD...YII=  
+            required: 
+              - mediaType
+              - content
+            title: Объект QR картинки
+  qrcPayloadResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RQ00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        $ref: '#/definitions/qrcPayloadResultData'
+    required:
+      - code
+      - message
+      - data
+    title: 'Успешный ответ на запрос payload, ранее зарегистрированного QR кода'
+  qrcPayloadResultData:
+    type: object
+    properties:
+      qrcId:
+        type: string
+        description: Идентификатор зарегистрированного QR кода в СБП
+        maxLength: 32
+        example: 'AS1000670LSS7DN18SJQDNP4B05KLJL2'
+      payload:
+        type: string
+        description: Payload зарегистрированного QR кода в СБП
+        maxLength: 999
+        example: 'https://qr.nspk.ru/AS1000670LSS7DN18SJQDNP4B05KLJL2?type=01&bank=100000000001&sum=10000&cur=RUB&crc=C08B'
+      image: 
+        $ref: '#/definitions/imageDataDto'
+    required:
+      - qrcId
+      - payload
+    title: 'Ответ на запрос payload, ранее зарегистрированного QR кода (блок Data)'
+  qrcStatusDto:
+      type: object
+      properties:
+        qrcIds:
+          type: array
+          description: Массив qrcId по которым нужно получить статус операции
+          items:
+            type: string
+            description: Идентификатор зарегистрированного QR кода в СБП
+            maxLength: 32
+            example: AS1000670LSS7DN18SJQDNP4B05KLJL2
+      title: Запрос статусов операций по QR кодам
+  qrcStatusResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RQ00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        type: array
+        description: Массив статусов операций по QR кодам
+        items:
+          type: object
+          properties:
+            qrcId:
+              type: string
+              description: 'Идентификатор QR кода, запрос по которому проводился'
+              maxLength: 32
+              example: 'AS1000670LSS7DN18SJQDNP4B05KLJL2'
+            code:
+              type: string
+              description: Код ответа на запрос статуса QR кода
+              maxLength: 7
+              example: RQ00000
+            message:
+              type: string
+              description: Описание кода ответа на запрос
+              maxLength: 255
+              example: Запрос обработан успешно
+            status:
+              type: string
+              enum:
+                - NTST
+                - RCVD
+                - ACTC
+                - ACWP
+                - RJCT
+              description: |
+                Статус операции, инициированной Dynamic QR кодом:
+                  * NTST - NOT_STARTED операции по QR коду не существует
+                  * RCVD - RECEIVED операция в обработке
+                  * ACTC - IN_PROGRESS операция в обработке
+                  * ACWP - ACCEPTED операция завершена успешно
+                  * RJCT - REJECTED операция отклонена
+            trxId:
+              type: string
+              description: 'Идентификатор операции, инициированной Dynamic QR кодом'
+              maxLength: 32
+              example: 'X1A2S3D5F6G7H8J9K0C4S5C6D7V5D1K2'
+          required:
+            - qrcId
+            - code
+            - message
+    required:
+      - code
+      - message
+      - data
+    title: Ответ на запрос статусов операций по QR кода
+  paymentdataResultOk:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Код ответа на запрос
+        maxLength: 7
+        example: RQ00000
+      message:
+        type: string
+        description: Описание кода ответа на запрос
+        maxLength: 255
+        example: Запрос обработан успешно
+      data:
+        type: object
+        properties:
+          qrcId:
+            type: string
+            description: 'Идентификатор QR кода, запрос по которому проводился'
+            maxLength: 32
+            example: 'AS1000670LSS7DN18SJQDNP4B05KLJL2'
+          qrcType:
+            type: string
+            enum:
+              - '01'
+              - '02'
+          amount:
+            type: string
+            maxLength: 12
+            description: |
+              Сумма в копейках.
+
+              Поле обязательно, если Тип QR = QR-Dynamic.
+            example: '10000'
+          currency:
+            type: string
+            enum:
+              - RUB
+            description: |
+              Валюта операции:
+                * RUB - Российский рубль
+
+              Поле обязательно, если заполнена сумма.
+          paymentPurpose:
+            type: string
+            description: Дополнительная информация от ТСП (Additional Information)
+            maxLength: 140
+          legalName:
+            type: string
+            description: Сокращенное наименование юридического лица
+            maxLength: 140
+            example: АО "НСПК"
+          brandName:
+            type: string
+            maxLength: 32
+            description: Название ТСП (имя по вывеске)
+            example: Кофейня у Артема
+          address:
+            type: string
+            description: Фактический адрес ТСП
+            maxLength: 140
+            example: 'улица Большая Татарская, дом 11'
+          memberId:
+            type: string
+            minLength: 12
+            maxLength: 12
+            description: Идентификатор банка-участника СБП
+            example: '100000000001'
+          crc:
+            type: string
+            minLength: 4
+            maxLength: 4
+            description: Значение контрольной суммы payload
+            example: 'C08B'
+          mcc:
+            type: string
+            minLength: 4
+            maxLength: 4
+            description: MCC код
+            example: '4122'
+        required:
+          - qrcId
+          - qrcType
+          - legalName
+          - brandName
+          - address
+          - memberId
+          - crc
+          - mcc
+    required:
+      - code
+      - message
+      - data
+    title: Ответ на запрос данных QR кода и Merchant по qrcId
