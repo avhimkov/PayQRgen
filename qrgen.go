@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"image/png"
 	"log"
@@ -34,10 +35,20 @@ func QRgen(text, path string) error {
 }
 
 // QRgenPayCore - generate pay info
-func (c *CoreBankPay) QRgenPayCore() string {
+func (c *CoreBankPay) QRgenPayCore(core *CoreBankPay) string {
+
+	coreBankPay := core
+
+	data, err := json.Marshal(coreBankPay)
+	if err != nil {
+		fmt.Println("An error occured: %v", err)
+		os.Exit(1)
+	}
+
+	// fmt.Println(string(data))
 
 	// var bytes bytes.Buffer
-	buff := new(bytes.Buffer)
+	/* buff := new(bytes.Buffer)
 
 	s := reflect.ValueOf(c).Elem()
 
@@ -50,7 +61,7 @@ func (c *CoreBankPay) QRgenPayCore() string {
 
 		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
 	}
-
+	*/
 	/*
 		b, err := json.Marshal(c)
 		if err != nil {
@@ -77,7 +88,8 @@ func (c *CoreBankPay) QRgenPayCore() string {
 		}
 	*/
 
-	return buff.String()
+	return string(data)
+	// return buff.String()
 }
 
 // QRgenPayExt - generate pay info

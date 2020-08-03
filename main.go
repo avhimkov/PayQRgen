@@ -72,7 +72,7 @@ func main() {
 	// QRreader("gen/qr.png")
 
 	// fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap) + extpay.QRgenPayExt(extpay) + anotextpay.QRgenPayAnotExt(anotextpay))
-	fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore())
+	fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap))
 	// fmt.Println(extpay.QRgenPayExt())
 	// fmt.Println(anotextpay.QRgenPayAnotExt())
 	// fmt.Println(cbpmap.GetCoreBankPay())
