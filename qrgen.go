@@ -36,21 +36,31 @@ func QRgen(text, path string) error {
 
 // QRgenPayCore - generate pay info
 func (c *CoreBankPay) QRgenPayCore(core *CoreBankPay) string {
+	/*
+		data, err := json.Marshal(core)
+		if err != nil {
+			fmt.Println("An error occured: %v", err)
+			os.Exit(1)
+		}
 
-	coreBankPay := core
+		err1 := json.Unmarshal(data, core)
+		if err1 != nil {
+			panic(err1)
+		} */
 
-	data, err := json.Marshal(coreBankPay)
+	// fmt.Println(core)
+
+	b, err := json.MarshalIndent(core.SelectFields("idCity", "city", "company"), "", "  ")
 	if err != nil {
-		fmt.Println("An error occured: %v", err)
-		os.Exit(1)
+		panic(err.Error())
 	}
+	fmt.Print(string(b))
 
-	// fmt.Println(string(data))
+	// buff := new(bytes.Buffer)
 
-	// var bytes bytes.Buffer
-	/* buff := new(bytes.Buffer)
+	buff := new(bytes.Buffer)
 
-	s := reflect.ValueOf(c).Elem()
+	s := reflect.ValueOf(core).Elem()
 
 	for i := 0; i < s.NumField(); i++ {
 		nameField := s.Type().Field(i).Name
@@ -61,7 +71,7 @@ func (c *CoreBankPay) QRgenPayCore(core *CoreBankPay) string {
 
 		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
 	}
-	*/
+
 	/*
 		b, err := json.Marshal(c)
 		if err != nil {
@@ -88,8 +98,8 @@ func (c *CoreBankPay) QRgenPayCore(core *CoreBankPay) string {
 		}
 	*/
 
-	return string(data)
-	// return buff.String()
+	// return string(data)
+	return buff.String()
 }
 
 // QRgenPayExt - generate pay info
@@ -124,4 +134,26 @@ func (a AnotherExtendBankPay) QRgenPayAnotExt() string {
 	}
 
 	return buff.String()
+}
+
+func fieldSet(fields ...string) map[string]bool {
+	set := make(map[string]bool, len(fields))
+	for _, s := range fields {
+		set[s] = true
+	}
+	return set
+}
+
+func (s *CoreBankPay) SelectFields(fields ...string) map[string]interface{} {
+	fs := fieldSet(fields...)
+	rt, rv := reflect.TypeOf(*s), reflect.ValueOf(*s)
+	out := make(map[string]interface{}, rt.NumField())
+	for i := 0; i < rt.NumField(); i++ {
+		field := rt.Field(i)
+		jsonKey := field.Tag.Get("json")
+		if fs[jsonKey] {
+			out[jsonKey] = rv.Field(i).Interface()
+		}
+	}
+	return out
 }

@@ -12,7 +12,7 @@ func main() {
 		PersonalAcc: "40702810138250123017",
 		BankName:    "ОАО \"БАНК\"",
 		BIC:         "044525225",
-		CorrespAcc:  "30101810400000000225",
+		CorrespAcc:  "",
 	}
 
 	/* 	extpay := ExtendBankPay{
