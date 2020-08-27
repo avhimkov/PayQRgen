@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"image/png"
 	"log"
@@ -36,27 +35,6 @@ func QRgen(text, path string) error {
 
 // QRgenPayCore - generate pay info
 func (c *CoreBankPay) QRgenPayCore(core *CoreBankPay) string {
-	/*
-		data, err := json.Marshal(core)
-		if err != nil {
-			fmt.Println("An error occured: %v", err)
-			os.Exit(1)
-		}
-
-		err1 := json.Unmarshal(data, core)
-		if err1 != nil {
-			panic(err1)
-		} */
-
-	// fmt.Println(core)
-
-	b, err := json.MarshalIndent(core.SelectFields("idCity", "city", "company"), "", "  ")
-	if err != nil {
-		panic(err.Error())
-	}
-	fmt.Print(string(b))
-
-	// buff := new(bytes.Buffer)
 
 	buff := new(bytes.Buffer)
 
@@ -71,32 +49,6 @@ func (c *CoreBankPay) QRgenPayCore(core *CoreBankPay) string {
 
 		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
 	}
-
-	/*
-		b, err := json.Marshal(c)
-		if err != nil {
-			fmt.Println(err)
-			// return
-		}
-	*/
-
-	/*
-		bytes := []byte(b)
-
-		// Unmarshal string into structs.
-		var coreBankPay []CoreBankPay
-		json.Unmarshal(bytes, &coreBankPay)
-	*/
-
-	// Loop over structs and display them.
-
-	/*
-		b := []byte(bytes)
-		err1 := json.Unmarshal(b, &cbpmap)
-		if err1 != nil {
-			panic(err1)
-		}
-	*/
 
 	// return string(data)
 	return buff.String()
@@ -144,9 +96,9 @@ func fieldSet(fields ...string) map[string]bool {
 	return set
 }
 
-func (s *CoreBankPay) SelectFields(fields ...string) map[string]interface{} {
+func (c *CoreBankPay) SelectFields(fields ...string) map[string]interface{} {
 	fs := fieldSet(fields...)
-	rt, rv := reflect.TypeOf(*s), reflect.ValueOf(*s)
+	rt, rv := reflect.TypeOf(*c), reflect.ValueOf(*c)
 	out := make(map[string]interface{}, rt.NumField())
 	for i := 0; i < rt.NumField(); i++ {
 		field := rt.Field(i)
@@ -155,5 +107,14 @@ func (s *CoreBankPay) SelectFields(fields ...string) map[string]interface{} {
 			out[jsonKey] = rv.Field(i).Interface()
 		}
 	}
+	// return buff.String()
 	return out
+}
+
+func CreateKeyValuePairs(m map[string]interface{}) string {
+	b := new(bytes.Buffer)
+	for key, value := range m {
+		fmt.Fprintf(b, "%s=%s|", key, value)
+	}
+	return b.String()
 }

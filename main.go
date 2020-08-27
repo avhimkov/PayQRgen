@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // github.com/divan/qrlogo
 
@@ -66,15 +68,15 @@ func main() {
 	   		// TechCode:        "",
 	   	}
 	*/
-	// fmt.Println(StdUtf8 + "|" + paycore.QRgenPayCore(paycore) + "|" + extpay.QRgenPayExt(extpay) + "|" + anotextpay.QRgenPayAnotExt(anotextpay))
+
 	// QRgen(StdUtf8+"|"+paycore.QRgenPayCore(paycore)+extpay.QRgenPayExt(extpay)+anotextpay.QRgenPayAnotExt(anotextpay), "gen/qr.png")
 
 	// QRreader("gen/qr.png")
 
-	// fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap) + extpay.QRgenPayExt(extpay) + anotextpay.QRgenPayAnotExt(anotextpay))
 	fmt.Println(StdUtf8 + "|" + cbpmap.QRgenPayCore(cbpmap))
-	// fmt.Println(extpay.QRgenPayExt())
-	// fmt.Println(anotextpay.QRgenPayAnotExt())
-	// fmt.Println(cbpmap.GetCoreBankPay())
+
+	d := cbpmap.SelectFields("Name", "BankName")
+
+	fmt.Print(StdUtf8 + "|" + CreateKeyValuePairs(d))
 
 }
