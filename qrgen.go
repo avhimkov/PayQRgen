@@ -33,61 +33,7 @@ func QRgen(text, path string) error {
 	return err
 }
 
-// QRgenPayCore - generate pay info
-func (c *CoreBankPay) QRgenPayCore(core *CoreBankPay) string {
-
-	buff := new(bytes.Buffer)
-
-	s := reflect.ValueOf(core).Elem()
-
-	for i := 0; i < s.NumField(); i++ {
-		nameField := s.Type().Field(i).Name
-		valueField := s.Field(i).Interface()
-		// typeField := s.Type().Field(i).Type
-		// Field := s.Type().Field(i)
-		// varTag := Field.Tag
-
-		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
-	}
-
-	// return string(data)
-	return buff.String()
-}
-
-// QRgenPayExt - generate pay info
-func (e ExtendBankPay) QRgenPayExt() string {
-
-	buff := new(bytes.Buffer)
-
-	s := reflect.ValueOf(e).Elem()
-
-	for i := 0; i < s.NumField(); i++ {
-		nameField := s.Type().Field(i).Name
-		valueField := s.Field(i).Interface()
-
-		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
-	}
-
-	return buff.String()
-}
-
-// QRgenPayAnotExt - generate pay info
-func (a AnotherExtendBankPay) QRgenPayAnotExt() string {
-
-	buff := new(bytes.Buffer)
-
-	s := reflect.ValueOf(a).Elem()
-
-	for i := 0; i < s.NumField(); i++ {
-		nameField := s.Type().Field(i).Name
-		valueField := s.Field(i).Interface()
-
-		fmt.Fprintf(buff, "%v=%v|", nameField, valueField)
-	}
-
-	return buff.String()
-}
-
+// fieldSet : Struct fild to map
 func fieldSet(fields ...string) map[string]bool {
 	set := make(map[string]bool, len(fields))
 	for _, s := range fields {
@@ -96,6 +42,7 @@ func fieldSet(fields ...string) map[string]bool {
 	return set
 }
 
+// SelectFields : CoreBankPay struct
 func (c *CoreBankPay) SelectFields(fields ...string) map[string]interface{} {
 	fs := fieldSet(fields...)
 	rt, rv := reflect.TypeOf(*c), reflect.ValueOf(*c)
@@ -111,6 +58,39 @@ func (c *CoreBankPay) SelectFields(fields ...string) map[string]interface{} {
 	return out
 }
 
+// SelectFields : ExtendBankPay struct
+func (c *ExtendBankPay) SelectFields(fields ...string) map[string]interface{} {
+	fs := fieldSet(fields...)
+	rt, rv := reflect.TypeOf(*c), reflect.ValueOf(*c)
+	out := make(map[string]interface{}, rt.NumField())
+	for i := 0; i < rt.NumField(); i++ {
+		field := rt.Field(i)
+		jsonKey := field.Tag.Get("json")
+		if fs[jsonKey] {
+			out[jsonKey] = rv.Field(i).Interface()
+		}
+	}
+	// return buff.String()
+	return out
+}
+
+// SelectFields : AnotherExtendBankPay struct
+func (c *AnotherExtendBankPay) SelectFields(fields ...string) map[string]interface{} {
+	fs := fieldSet(fields...)
+	rt, rv := reflect.TypeOf(*c), reflect.ValueOf(*c)
+	out := make(map[string]interface{}, rt.NumField())
+	for i := 0; i < rt.NumField(); i++ {
+		field := rt.Field(i)
+		jsonKey := field.Tag.Get("json")
+		if fs[jsonKey] {
+			out[jsonKey] = rv.Field(i).Interface()
+		}
+	}
+	// return buff.String()
+	return out
+}
+
+// CreateKeyValuePairs : convert map to string
 func CreateKeyValuePairs(m map[string]interface{}) string {
 	b := new(bytes.Buffer)
 	for key, value := range m {

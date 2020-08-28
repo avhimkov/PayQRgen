@@ -45,7 +45,7 @@ type ExtendBankPay struct {
 
 // AnotherExtendBankPay - Прочие дополнительные реквизиты
 type AnotherExtendBankPay struct {
-	LastName        string `json:"Sum"`             // Фамилия плательщика
+	LastName        string `json:"LastName"`        // Фамилия плательщика
 	FirstName       string `json:"FirstName"`       // Имя плательщика
 	MiddleName      string `json:"MiddleName"`      // Отчество плательщика
 	PayerAddress    string `json:"PayerAddress"`    // Адрес плательщика
