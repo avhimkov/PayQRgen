@@ -22,7 +22,7 @@ type CoreBankPay struct {
 	BankName    string `json:"BankName"`    // Наименование банка получателя платежа - Макс. 45 знаков (не определен [5])
 	BIC         string `json:"BIC"`         // БИК - Макс. 9 знаков (имя тега по [5] : Payee/ Bank/ BIC)
 	CorrespAcc  string `json:"CorrespAcc"`  // Номер кор./сч. банка получателя платежа - Макс. 20 знаков (имя тега по УФЭБС: Payee/ Bank/ CorrespAcc)
-	// ExBankPay   ExtendBankPay
+	// ExBankPay   ExtendBankPay `json:"ExBankPay"`
 }
 
 // ExtendBankPay - Дополнительные реквизиты, формат значений которых определяется Альбомом [5].
@@ -40,7 +40,7 @@ type ExtendBankPay struct {
 	DocNo        string `json:"DocNo"`        // Номер документа - Макс. 15 знаков (имя тега по [5]: DepartmentalInfo/ DocNo)
 	DocDate      string `json:"DocDate"`      // Дата документа - Макс. 10 знаков (имя тега по [5]: DepartmentalInfo/ DocDate)
 	TaxPaytKind  string `json:"TaxPaytKind"`  // Тип платежа - Макс. 2 знака (имя тега по [5]: sDepartmentalInfo/ TaxPaytKind)
-	// AExBankPay   AnotherExtendBankPay
+	// AExBankPay   AnotherExtendBankPay `json:"AExBankPay"`
 }
 
 // AnotherExtendBankPay - Прочие дополнительные реквизиты

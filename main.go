@@ -1,8 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // github.com/divan/qrlogo
 
@@ -68,16 +66,18 @@ func main() {
 		TechCode:        "",
 	}
 
-	// QRgen(StdUtf8+"|"+paycore.QRgenPayCore(paycore)+extpay.QRgenPayExt(extpay)+anotextpay.QRgenPayAnotExt(anotextpay), "gen/qr.png")
-
-	// QRreader("gen/qr.png")
-
 	core := cbpmap.SelectFields("Name", "BankName")
 
 	ext := extpay.SelectFields("Sum", "PayeeINN")
 
 	anoth := anothextpay.SelectFields("LastName", "Phone")
 
-	fmt.Print(StdUtf8 + "|" + CreateKeyValuePairs(core) + CreateKeyValuePairs(ext) + CreateKeyValuePairs(anoth))
+	cod := StdUtf8 + "|" + CreateKeyValuePairs(core) + CreateKeyValuePairs(ext) + CreateKeyValuePairs(anoth)
+
+	fmt.Print(cod + "\n")
+
+	QRgen(cod, "gen/qr.png")
+
+	QRreader("gen/qr.png")
 
 }
