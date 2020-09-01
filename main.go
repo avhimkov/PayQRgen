@@ -1,11 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+)
 
 // github.com/divan/qrlogo
 
 func main() {
-	// QRgen("http://yandex.ru", "gen/qr.png")
 
 	cbpmap := &CoreBankPay{
 		Name:        "ООО «Три кита»",
@@ -79,5 +82,13 @@ func main() {
 	QRgen(cod, "gen/qr.png")
 
 	QRreader("gen/qr.png")
+
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+	r.Run()
 
 }
