@@ -1,0 +1,185 @@
+<!--operator.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+<div class="container-fluid">
+    <p></p>
+    <div class="card">
+        <h3 class="card-header">Регистрация услуги</h3>
+        <div class="col-sm-12">
+            <p></p>
+            <div class="form-row">
+                <div class="col">
+                    <h6>Найти услугу</h6>
+                    <label class="sr-only" for="inlineFormInput">Название услуги</label>
+                    <input class="search-input form-control mr-sm-2 mb-2 mb-sm-0" id="serviceid"></input>
+                </div>
+                <div class="col">
+                    <h6>Выбор окна</h6>
+                    <label class="sr-only" for="inlineFormInput">Окна</label>
+                    <select class="custom-select">
+                    <!-- <select class="custom-select" multiple> -->
+                                    <!-- <option selected>Open this select menu</option> -->
+                                    <option value="1">OKNO 1</option>
+                                    <option value="2">OKNO 2</option>
+                                    <option value="3">OKNO 3</option>
+                                    <option value="4">OKNO 4</option>
+                                    <option value="5">OKNO 5</option>
+                                    <option value="6">OKNO 6</option>
+                                    <option value="7">OKNO 7</option>
+                    </select>
+                </div>
+            </div>
+
+            <p></p>
+            <div id="jstree">
+                <script>
+                    $('#jstree').jstree({
+                        'core': {
+                            'data': [{
+                                "text": "Услуги МФЦ",
+                                "state": {
+                                    "opened": true
+                                },
+                                "children": ["{{range $i, $e := .service}}{{$e.Name}},{{end}}"]
+                            }]
+                        },
+                        "search": {
+                            "case_insensitive": true,
+                            "show_only_matches": true
+                        },
+                        "plugins": ["search"]
+                    });
+                </script>
+            </div>
+
+            <div class="form-row text-right">
+                <div class="col-12">
+                    <form class="form" action="/" method="POST">
+                        <div class="form-row">
+                            <div class="col">
+                                <h6>ФИО посетителя</h6>
+                                <label class="sr-only" for="inlineFormInput">ФИО посетителя</label>
+                                <input type="text" name="fio" class="form-control" id="fio" placeholder="ФИО" required>
+                            </div>
+                            <div class="col">
+                                <h6>Коментарий</h6>
+                                <label class="sr-only" for="inlineFormInput">Коментарий</label>
+                                <input type="text" name="comment" class="form-control" id="comment" placeholder="Коментарий" required>
+                            </div>
+                            <div class="col">
+                                <h6>Услуга</h6>
+                                <label class="sr-only" for="inlineFormInput">Услуга</label>
+                                <input type="text" name="serviceid" class="form-control" id="serviceid" placeholder="Услуга" required>
+                            </div>
+                        </div>
+                        <p></p>
+                        <button type="submit" class="btn btn-primary float-right">Создать</button>
+                        <p></p>
+                    </form>
+
+                    <!-- <form enctype="multipart/form-data" class="form1" action="/" method="POST">
+                        <div class="modal-footer ">
+                            <div class="form-row">
+                                <div class="col">
+                                    <h6>ФИО посетителя</h6>
+                                    <label class="sr-only" for="inlineFormInput">ФИО посетителя</label>
+                                    <input type="text" class="search-input form-control mr-sm-2 mb-2 mb-sm-0" id="fio"></input>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <h6>Коментарий</h6>
+                                    <label class="sr-only" for="inlineFormInput">Коментарий</label>
+                                    <input type="text" class="search-input form-control mr-sm-2 mb-2 mb-sm-0" id="comment"></input>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <h6>Услуга</h6>
+                                    <label class="sr-only" for="inlineFormInput">Услуга</label>
+                                    <input type="text" class="search-input form-control mr-sm-2 mb-2 mb-sm-0" id="serviceid"></input>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning" style="width: 100%;">
+                        Создать
+                        <i class="fa fa-plus"></i>
+                        </button>
+
+                        <button type="submit" class="btn btn-warning" style="width: 100%;">
+                        Записать на время
+                        <i class="fa fa-clock"></i>
+                        </button> -->
+
+                    <!-- </div>
+                    </form> -->
+                    <!-- <form action="/removeval/Person/" method="GET">
+                        <button class="btn btn-danger btn-rounded btn-sm my-0" type="submit"><i class="fas fa-sign-in-alt"></i></button>
+                    </form> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <p></p>
+        <div class="card">
+            <h3 class="card-header panel-success white-text">Список талонов</h3>
+            <div class="card-body">
+                <table id="table" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <!-- <th data-sortable="true" data-field="User">Оператор</th> -->
+                            <!-- <th>TicketStepID</th>
+                        <th>TicketNo</th>
+                        <th>CustID</th>
+                        <th>CustData</th>
+                        <th>SourceKind</th>
+                        <th>State</th>
+                        <th>ServiceID</th>
+                        <th>RegTime</th>
+                        <th>CallTime</th>
+                        <th>PriorityID</th>
+                        <th>QualityMark</th> -->
+
+                            <!-- <th>TicketStepID</th> -->
+                            <th>Номер</th>
+                            <th>Данные посетителя</th>
+                            <th>Номер услуги</th>
+                            <th>Время регистрации</th>
+                            <th>Время вызова</th>
+                        </tr>
+                        <script>
+                            function Formatter(value) {
+                                return value.substring(0, 20) + "...";
+                            }
+                        </script>
+                    </thead>
+                    <tbody>
+                        {{range $i, $e := .tiketstep}}
+                        <tr>
+                            <td>{{$e.TicketNo}}</td>
+                            <td>{{$e.CustData}}</td>
+                            <td>{{$e.ServiceID}}</td>
+                            <td>{{$e.RegTime}}</td>
+                            <td>{{$e.CallTime}}</td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <p></p>
+
+    <script>
+        $('#table').tableExport({
+            type: 'excel'
+        });
+    </script>
+
+    <!--Embed the footer.html template at this location-->
+    {{ template "footer.html" .}}
