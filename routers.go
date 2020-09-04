@@ -2,6 +2,7 @@ package main
 
 import "github.com/gin-gonic/gin"
 
+// SetupRouter : init routes
 func SetupRouter() *gin.Engine {
 
 	// Set Gin to production mode
