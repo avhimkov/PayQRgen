@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -83,12 +84,25 @@ func main() {
 
 	QRreader("gen/qr.png")
 
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
+	/*
+		r := gin.Default()
+		r.GET("/ping", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "pong",
+			})
 		})
+		r.Run()
+	*/
+	g := SetupRouter()
+	g.GET("/", indexPageGet)
+	g.POST("/", indexPagePost)
+
+	// 404 page
+	g.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusOK, "404.html", gin.H{})
 	})
-	r.Run()
+
+	// Start serving the application
+	g.Run(":3000")
 
 }
